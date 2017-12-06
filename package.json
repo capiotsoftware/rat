@@ -1,0 +1,19 @@
+{
+  "name": "capiot_rest_api_tester",
+  "version": "1.0.0",
+  "description": "ReST APi Tester",
+  "main": "./bin/app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "author": "Jerry M.",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.1",
+    "express": "^4.15.4",
+    "mocha": "^3.5.3"
+  },
+  "bin": {
+    "rat": "./bin/app.js"
+  }
+}
