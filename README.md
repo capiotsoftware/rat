@@ -1,5 +1,9 @@
 # ReST API Tester - R.A.T #
 
+Writing test cases and automating them are fairly time consuming activities. RAT aims to eliminate the pain of automating REST API test cases.
+
+In itself, RAT is not a new framework. It's a simple code generator that generates [mocha](https://mochajs.org) test cases from a simple JSON file.
+
 ## Pre-requisites
 `npm install -g winston chai mocha supertest`
 
@@ -8,11 +12,17 @@
 
 ## Usage
 
-`# rat <options>`
+`# rat [options] [file ...]`
 
 The available options are,
 
-* `init` - Initializes the folders.
-* `clean` - _Caution!_ Clears the current folder.
-* `generate <testcaseFile>` - Generate the test scripts for the given test case file. The tool checks for the test case files under the *tests* folder. The generates tests are available under the scripts folder. If no options are provided, then all the test case files are picked up and test scripts are generated.
-* `run <testScript>` - Run the test script or if the script file is not provided, sequentially run all the tests from the scripts folder. The result is available under the *logs* folder.
+* `i, init`: Creates all the required folders and initializes it with a sample test case.
+* `clean`: Remove all RAT generated files and folders.
+* `clear`: Clears all the log files under the _logs_ folder.
+* `g, generate`: Generates scripts for all the files under tests folder.
+* `g, generate [file ...]`: Generate the script for only the specifed test file.
+* `r, run`: Run all the tests.
+* `r, run [file ...]`: Run the specific test.
+* `demo`: Starts the demo server.
+
+## How to write test cases?

@@ -8,12 +8,10 @@ var _tc = "";
 e.initTestSuite = function(_suitName, _url) {
     _tc = "";
     _tc += "var expect = require('chai').expect;var assert = require('chai').assert;";
-    "";
     _url.forEach((_url, _i) => {
         _tc += "var api" + (_i + 1) + " = require('supertest')('" + _url + "');"
     });
     _tc += "describe('" + _suitName + "', function () {";
-    _tc += "function compareJson(_this, _that) {for (_k_this in _this) {if (!compare(_this[_k_this], _that[_k_this])) return false;}return true;};function compareArrays(_this, _that) {if (_this.length == 0 && _that.length == 0) return true;if (_this.length == 0 && _that.length != 0) return false;for (var i = 0; i < _this.length; i++) {return compare(_this[i], _that[i]);}};function compare(o1, o2) {if (Object.prototype.toString.call(o1) == '[object Object]' && Object.prototype.toString.call(o2) == '[object Object]') {return compareJson(o1, o2);}if (Object.prototype.toString.call(o1) == '[object Array]' && Object.prototype.toString.call(o2) == '[object Array]') {return compareArrays(o1, o2)}if (o1 != o2) {return false;}return true;};";
 };
 
 e.endTestSuite = function() {
@@ -28,6 +26,116 @@ e.addEdpoints = function(_a) {
     _tc += "var urls = " + _a + ";";
 };
 
+function whatIsThis(_d) {
+    if (Object.prototype.toString.call(_d) == "[object Object]") return 1;
+    if (Object.prototype.toString.call(_d) == "[object Array]") return 2;
+    if (Object.prototype.toString.call(_d) == "[object String]") return 3;
+    if (Object.prototype.toString.call(_d) == "[object Number]") return 4;
+    if (Object.prototype.toString.call(_d) == "[object Boolean]") return 5;
+    return 0;
+}
+
+function generateAssertionsForArray(_p, _d) {
+    _tc += "expect(" + _p + ").to.be.an('array');";
+    if (_d.length) {
+        _d.forEach((_e, _i) => {
+            let path = _p + "[" + _i + "]"
+            switch (whatIsThis(_e)) {
+                case 1:
+                    generateAssertionsForJson(path, _e);
+                    break;
+                case 2:
+                    generateAssertionsForArray(path, _e);
+                    break;
+                case 3:
+                    if (_e.indexOf("{{") > -1) {
+                        _tc += "expect(" + path + ").to.be.equal(" + _e.split("}}").shift().split("{{").pop() + ");";
+                    } else {
+                        _tc += "expect(" + path + ").to.be.a('string');";
+                        _tc += "expect(" + path + ").to.be.equal('" + _e + "');";
+                    }
+                    break;
+                case 4:
+                    _tc += "expect(" + path + ").to.be.a('number');";
+                    _tc += "expect(" + path + ").to.be.equal(" + _e + ");";
+                    break;
+                case 5:
+                    _tc += "expect(" + path + ").to.all.satisfy(bool => typeof bool === 'boolean');"
+                    _tc += "expect(" + path + ").to.be.equal(" + _e + ");";
+                    break;
+                default:
+                    if (_p != "res.body") _tc += "expect(" + path + ").to.exist;";
+                    break;
+            }
+        });
+    }
+};
+
+function generateAssertionsForJson(_p, _d) {
+    for (_k in _d) {
+        let path = _p + "." + _k;
+        switch (whatIsThis(_d[_k])) {
+            case 1:
+                generateAssertionsForJson(path, _d[_k]);
+                break;
+            case 2:
+                generateAssertionsForArray(path, _d[_k]);
+                break;
+            case 3:
+                if (_d[_k].indexOf("{{") > -1) {
+                    _tc += "expect(" + path + ").to.be.equal(" + _d[_k].split("}}").shift().split("{{").pop() + ");";
+                } else {
+                    _tc += "expect(" + path + ").to.be.a('string');";
+                    _tc += "expect(" + path + ").to.be.equal('" + _d[_k] + "');";
+                }
+                break;
+            case 4:
+                _tc += "expect(" + path + ").to.be.a('number');";
+                _tc += "expect(" + path + ").to.be.equal(" + _d[_k] + ");";
+                break;
+            case 5:
+                _tc += "expect(" + path + ").to.all.satisfy(bool => typeof bool === 'boolean');"
+                _tc += "expect(" + path + ").to.be.equal(" + _d[_k] + ");";
+                break;
+            default:
+                _tc += "expect(" + path + ").to.exist;";
+                break;
+        }
+    }
+};
+
+function generateAssertions(_d) {
+    let path = "res.body"
+    if (whatIsThis(_d) == 1) generateAssertionsForJson(path, _d);
+    if (whatIsThis(_d) == 2) generateAssertionsForArray(path, _d);
+    if (whatIsThis(_d) == 3) {
+        if (_d.indexOf("{{") > -1) {
+            _tc += "expect(" + path + ").to.be.equal(" + _d.split("}}").shift().split("{{").pop() + ");";
+        } else {
+            _tc += "expect(" + path + ").to.be.a('string');";
+            _tc += "expect(" + path + ").to.be.equal('" + _d + "');";
+        }
+    }
+    if (whatIsThis(_d) == 4) {
+        _tc += "expect(" + path + ").to.be.a('number');";
+        _tc += "expect(" + path + ").to.be.equal(" + _d + ");";
+    }
+    if (whatIsThis(_d) == 5) {
+        _tc += "expect(" + path + ").to.all.satisfy(bool => typeof bool === 'boolean');"
+        _tc += "expect(" + path + ").to.be.equal(" + _d + ");";
+    }
+}
+
+function parseData(_d){
+    return _d.replace(/}}\"/gi, "").replace(/\"{{/gi, "");
+}
+
+function urlSubstitute(_url) {
+    let url = _url.split("}}").shift().split("{{");
+    if (url.length == 1) return "\"" + _url + "\"";
+    return "\"" + url[0] + "\" + " + url[1];
+}
+
 e.test = function(tc, endpoint, request, response) {
     var expectedResponseHeaders = response && response.headers ? response.headers : null;
     _tc += "it('" + tc + "', function (done) {";
@@ -35,42 +143,41 @@ e.test = function(tc, endpoint, request, response) {
 
     if (request.method == "POST") {
         _tc += "var request = api" + endpoint + ".post('" + request.url + "')";
-        if (request.payload) _tc += ".send(" + JSON.stringify(request.payload) + ")";
-        else if (request.payloadFile) _tc += ".send(" + cli.readFile("lib/" + request.payloadFile) + ")";
+        if (request.payload) _tc += ".send(" + parseData(JSON.stringify(request.payload)) + ")";
+        else if (request.payloadFile) _tc += ".send(" + parseData(cli.readFile("lib/" + request.payloadFile)) + ")";
         else _tc += ".send({})";
     }
 
-    if (request.method == "GET") {
-        if (request.url.indexOf("+") > -1)
-            _tc += "api" + endpoint + ".get(" + request.url + ")";
-        else
-            _tc += "api" + endpoint + ".get('" + request.url + "')";
-    }
+    if (request.method == "GET") _tc += "api" + endpoint + ".get(" + urlSubstitute(request.url) + ")";
 
     if (request.method == "PUT") {
-        _tc += "api" + endpoint + ".put('" + request.url + "')";
-        if (request.payload) _tc += ".send(" + JSON.stringify(request.payload) + ")";
-        else if (request.payloadFile) _tc += ".send(" + cli.readFile("lib/" + request.payloadFile) + ")";
+        _tc += "api" + endpoint + ".put(" + urlSubstitute(request.url) + ")";
+        if (request.payload) _tc += ".send(" + parseData(JSON.stringify(request.payload)) + ")";
+        else if (request.payloadFile) _tc += ".send(" + parseData(cli.readFile("lib/" + request.payloadFile)) + ")";
         else _tc += ".send({})";
     }
 
-    if (request.method == "DELETE") {
-        _tc += "api" + endpoint + ".del('" + request.url + "')";
-    }
+    if (request.method == "DELETE") _tc += "api" + endpoint + ".delete(" + urlSubstitute(request.url) + ")";
+
     if (request.headers) {
         for (var k in request.headers) {
-            _tc += ".set(\"" + k + "\"," + request.headers[k] + ")";
+            let val = request.headers[k];
+            if (val.indexOf("{{") > -1) val = val.split("}}").shift().split("{{").pop();
+            else val = "\"" + val + "\"";
+            _tc += ".set(\"" + k + "\"," + val + ")";
         }
     }
 
     _tc += ".expect(" + request.responseCode + ")";
-    //    if (request.saveResponse || expectedResponse) _tc += ".expect(" + request.responseCode + ")";
-    //    else _tc += ".expect(" + request.responseCode + ", done)";
 
     _tc += ".end(function (err, res) {logger.info('Request');";
-    _tc += "logger.info(res.request.method, res.request.url, res.request.header, res.request._data);";
-    _tc += "logger.info('Response');";
-    _tc += "logger.info(res.res.statusCode, res.res.headers, res.res.body);";
+    _tc += "logger.info('Request METHOD', res.request.method);";
+    _tc += "logger.info('Request URL', res.request.url);";
+    _tc += "logger.info('Request HEADER', res.request.header);";
+    _tc += "logger.info('Request DATA', res.request._data);";
+    _tc += "logger.info('Response STATUS', res.statusCode);";
+    _tc += "logger.info('Response HEADER', res.headers);";
+    _tc += "logger.info('Response BODY', res.body);";
     _tc += "try{"
     _tc += "expect(res.status).to.equal(" + request.responseCode + ");";
     if (request.saveResponse)
@@ -89,29 +196,7 @@ e.test = function(tc, endpoint, request, response) {
         _tc += "expect(err).to.be.null;";
         _tc += "expect(res.body).to.be.not.null;";
 
-        if (Object.prototype.toString.call(expectedResponse) == "[object Array]") {
-            if (expectedResponse.length == 0) {
-                _tc += "expect(res.body).to.eql(" + JSON.stringify(expectedResponse) + ");";
-            } else {
-                for (var i = 0; i < expectedResponse.length; i++) {
-                    for (k in expectedResponse[i]) {
-                        if (expectedResponse[i][k] != null) {
-                            if (typeof expectedResponse[i][k] == "boolean") _tc += "expect(res.body[" + i + "]['" + k + "']).to.be." + expectedResponse[i][k] + ";";
-                            if (typeof expectedResponse[i][k] == "string") _tc += "expect(res.body[" + i + "]['" + k + "']).to.equal('" + expectedResponse[i][k] + "');";
-                            if (typeof expectedResponse[i][k] == "object") _tc += "expect(res.body[" + i + "]['" + k + "']).to.eql(" + JSON.stringify(expectedResponse[i][k]) + ");";
-                        } else _tc += "expect(res.body[" + i + "]['" + k + "']).to.be.not.empty;";
-                    }
-                }
-            }
-        } else {
-            for (k in expectedResponse) {
-                if (expectedResponse[k] != null) {
-                    if (typeof expectedResponse[k] == "boolean") _tc += "expect(res.body." + k + ").to.be." + expectedResponse[k] + ";";
-                    if (typeof expectedResponse[k] == "string") _tc += "expect(res.body." + k + ").to.equal('" + expectedResponse[k] + "');";
-                    if (typeof expectedResponse[k] == "object") _tc += "expect(res.body." + k + ").to.eql(" + JSON.stringify(expectedResponse[k]) + ");";
-                } else _tc += "expect(res.body." + k + ").to.be.not.empty;";
-            }
-        }
+        generateAssertions(expectedResponse);
     }
     _tc += "logger.info('" + tc + " :: PASS');";
     _tc += "}catch (_err){logger.error(_err.message);";

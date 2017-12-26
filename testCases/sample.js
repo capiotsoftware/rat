@@ -1,7 +1,12 @@
 module.exports = {
     "testName": "Sample API Tests",
-    "url": ["http://localhost:8080"],
-    "globals": ["loginResponse"],
+    "url": [
+        "http://localhost:8080"
+    ],
+    "globals": [
+        "loginResponse",
+        "data"
+    ],
     "tests": [{
             "endpoint": "1",
             "name": "Error API - GET",
@@ -31,7 +36,7 @@ module.exports = {
                     "password": "password"
                 },
                 "responseCode": 200,
-                "saveResponse": "loginResponse",
+                "saveResponse": "loginResponse"
             },
             "response": {
                 "body": {
@@ -49,8 +54,7 @@ module.exports = {
                     "username": "alice123",
                     "password": "password"
                 },
-                "responseCode": 400,
-                "saveResponse": false
+                "responseCode": 400
             },
             "response": {
                 "body": {
@@ -65,26 +69,26 @@ module.exports = {
                 "method": "GET",
                 "url": "/data",
                 "headers": {
-                    "token": "loginResponse.token"
+                    "token": "{{loginResponse.token}}"
                 },
-                "responseCode": 200,
-                "saveResponse": false
+                "responseCode": 200
             },
             "response": {
-                "bodyFile": "sampleResponsePayload.json"
+                "body": [
+                    null
+                ]
             }
         },
         {
             "endpoint": "1",
-            "name": "Fetch data - Inalid",
+            "name": "Fetch data - Invalid",
             "request": {
                 "method": "GET",
                 "url": "/data",
                 "headers": {
-                    "token": "'asdasdasdasd'"
+                    "token": "asdasdasdasd"
                 },
-                "responseCode": 400,
-                "saveResponse": false
+                "responseCode": 400
             },
             "response": {
                 "body": {
@@ -99,11 +103,11 @@ module.exports = {
                 "method": "POST",
                 "url": "/data",
                 "headers": {
-                    "token": "loginResponse.token"
+                    "token": "{{loginResponse.token}}"
                 },
                 "payloadFile": "sampleRequestPayload.json",
                 "responseCode": 200,
-                "saveResponse": false
+                "saveResponse": "data"
             },
             "response": {
                 "headers": {
@@ -121,9 +125,98 @@ module.exports = {
                         "pin": "560103"
                     },
                     "mobile": "+91 987 654 4323",
-                    "nameOfChildren": ["Alpha Cooper", "Beta Cooper", "Charlie Cooper"],
+                    "nameOfChildren": [
+                        "Alpha Cooper",
+                        "Beta Cooper",
+                        "Charlie Cooper"
+                    ],
                     "dateOfBirths": null
                 }
+            }
+        },
+        {
+            "endpoint": "1",
+            "name": "Fetch data with ID",
+            "request": {
+                "method": "GET",
+                "url": "/data/{{data._id}}",
+                "headers": {
+                    "token": "{{loginResponse.token}}"
+                },
+                "responseCode": 200
+            },
+            "response": {
+                "bodyFile": "sampleResponsePayload.json"
+            }
+        },
+        {
+            "endpoint": "1",
+            "name": "Update data",
+            "request": {
+                "method": "PUT",
+                "url": "/data/{{data._id}}",
+                "headers": {
+                    "token": "{{loginResponse.token}}"
+                },
+                "payload": {
+                    "name": "Alice Cooper",
+                    "number": "123123123"
+                },
+                "responseCode": 200
+            },
+            "response": {
+                "body": {
+                    "name": "Alice Cooper",
+                    "number": "123123123",
+                    "_id": "{{data._id}}"
+                }
+            }
+        },
+        {
+            "endpoint": "1",
+            "name": "Fetch data with ID after UPDATE",
+            "request": {
+                "method": "GET",
+                "url": "/data/{{data._id}}",
+                "headers": {
+                    "token": "{{loginResponse.token}}"
+                },
+                "responseCode": 200
+            },
+            "response": {
+                "body": {
+                    "name": "Alice Cooper",
+                    "number": "123123123"
+                }
+            }
+        },
+        {
+            "endpoint": "1",
+            "name": "Delete data",
+            "request": {
+                "method": "DELETE",
+                "url": "/data/{{data._id}}",
+                "headers": {
+                    "token": "{{loginResponse.token}}"
+                },
+                "responseCode": 200
+            },
+            "response": {
+                "body": {
+                    "_id": null
+                }
+            }
+        },
+        {
+            "endpoint": "1",
+            "name": "Fetch data with ID after DELETE",
+            "request": {
+                "method": "GET",
+                "url": "/data/{{data._id}}",
+                "headers": {
+                    "token": "{{loginResponse.token}}"
+                },
+                "responseCode": 404
             }
         }
     ]

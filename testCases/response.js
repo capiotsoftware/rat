@@ -1,5 +1,6 @@
 module.exports = {
-    "name": "Alice Cooper",
+    "_id": "{{data._id}}",
+    "name": "{{data.name}}",
     "address": {
         "line1": "#404 Pritam Woods",
         "line2": "Bellandur",

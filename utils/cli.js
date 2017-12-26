@@ -5,16 +5,17 @@ var execSync = require("child_process").execSync;
 var e = {};
 
 e.usage = () => {
-    var message = "rat <options> \n";
-    message += "Avilable options are \n";
-    message += "\t rat init                  Initialize\n";
-    message += "\t rat clean                 Clean up\n";
-    message += "\t rat clear                 Removes all the logs.\n";
-    message += "\t rat generate              Generates scripts for all the files under tests folder\n";
-    message += "\t rat generate <testFile>   Generate the script for only the specifed test file\n";
-    message += "\t rat run                   Run all the tests\n";
-    message += "\t rat run <generatedFIle>   Run the specific test\n";
-    message += "\t rat demo                  Starts the demo server\n";
+    var message = "Usage: rat [options] [file ...]\n";
+    message += "Options: \n";
+    message += "\t i, init                 Initialize\n";
+    message += "\t clean                   Clean up\n";
+    message += "\t clear                   Clears all the log files.\n";
+    message += "\t g, generate             Generates scripts for all the files under tests folder\n";
+    message += "\t g, generate [file ...]  Generate the script for only the specifed test file\n";
+    message += "\t r, run                  Run all the tests\n";
+    message += "\t r, run [file ...]       Run the specific test\n";
+    message += "\t demo                    Starts the demo server\n";
+    message += "Some of the available options might overwrite your files without warning.\n";
     console.log(message);
     process.exit();
 };
@@ -23,6 +24,7 @@ e.init = () => {
     console.log("Initializing folder...");
     var sampleTestCase = require("../testCases/sample.js");
     var samplePayload = require("../testCases/payload.js");
+    var sampleResonse = require("../testCases/response.js");
     let testFileName = process.cwd() + (process.platform == "win32" ? "\\tests\\" : "/tests/") + "sample.json";
     let requestFileName = process.cwd() + (process.platform == "win32" ? "\\lib\\" : "/lib/") + "sampleRequestPayload.json";
     let responseFileName = process.cwd() + (process.platform == "win32" ? "\\lib\\" : "/lib/") + "sampleResponsePayload.json";
@@ -36,7 +38,7 @@ e.init = () => {
     if (!fs.existsSync("tests")) fs.mkdirSync("tests");
     fs.writeFileSync(testFileName, JSON.stringify(sampleTestCase, null, " "));
     fs.writeFileSync(requestFileName, JSON.stringify(samplePayload, null, " "));
-    fs.writeFileSync(responseFileName, JSON.stringify(samplePayload, null, " "));
+    fs.writeFileSync(responseFileName, JSON.stringify(sampleResonse, null, " "));
     console.log("Done!");
     process.exit();
 };
