@@ -9,8 +9,6 @@ var tcFile;
 
 var e = {};
 
-var testCases = [];
-
 e.generate = (_tcFile) => {
     let fileName = process.platform == "win32" ? "tests\\" : "tests/";
     tcFile = fileName + _tcFile;
@@ -28,14 +26,14 @@ e.generate = (_tcFile) => {
 
     stubs.endTestSuite();
 
-    testCases.push(stubs.generate(_tcFile));
+    stubs.generate(_tcFile);
 };
 
 e.run = function(_tcFile) {
     let fileName = process.platform == "win32" ? "scripts\\" : "scripts/";
     tcFile = fileName + _tcFile;
     mocha.addFile(tcFile);
-    var op = spawnSync("mocha", [tcFile], { stdio: [0, 1, 2, 3] });
+    var op = spawnSync("mocha" ,["-b", tcFile], { stdio: [0, 1, 2, 3] });
     // var data = "";
     // op.stdout.on('data', (_d) => data += _d);
     // op.stderr.on('data', (data) => {

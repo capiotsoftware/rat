@@ -220,6 +220,38 @@ module.exports = {
                 },
                 "responseCode": 404
             }
+        },{
+            "endpoint": "1",
+            "name": "Stop on errror",
+            "request": {
+                "method": "GET",
+                "url": "/data",
+                "headers": {
+                    "token": "asdasdasdasd"
+                },
+                "responseCode": 200
+            },
+            "response": {
+                "body": {
+                    "message": "Invalid request"
+                }
+            }
+        },{
+            "endpoint": "1",
+            "name": "This will not be executed",
+            "request": {
+                "method": "GET",
+                "url": "/data",
+                "headers": {
+                    "token": "{{loginResponse.token}}"
+                },
+                "responseCode": 200
+            },
+            "response": {
+                "body": [
+                    null
+                ]
+            }
         }
     ]
 };
