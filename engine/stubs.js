@@ -4,6 +4,7 @@ var cli = require("../utils/cli");
 
 var e = {};
 var _tc = "";
+var delimiters = ["{{", "}}"];
 
 e.initTestSuite = function(_suitName, _url) {
     _tc = "";
@@ -49,7 +50,7 @@ function generateAssertionsForArray(_p, _d) {
                     break;
                 case 3:
                     if (_e.indexOf("{{") > -1) {
-                        _tc += "expect(" + path + ").to.be.equal(" + _e.split("}}").shift().split("{{").pop() + ");";
+                        _tc += "expect(" + path + ").to.be.equal(" + _e.split(delimiters[1]).shift().split(delimiters[0]).pop() + ");";
                     } else {
                         _tc += "expect(" + path + ").to.be.a('string');";
                         _tc += "expect(" + path + ").to.be.equal('" + _e + "');";
@@ -83,7 +84,7 @@ function generateAssertionsForJson(_p, _d) {
                 break;
             case 3:
                 if (_d[_k].indexOf("{{") > -1) {
-                    _tc += "expect(" + path + ").to.be.equal(" + _d[_k].split("}}").shift().split("{{").pop() + ");";
+                    _tc += "expect(" + path + ").to.be.equal(" + _d[_k].split(delimiters[1]).shift().split(delimiters[0]).pop() + ");";
                 } else {
                     _tc += "expect(" + path + ").to.be.a('string');";
                     _tc += "expect(" + path + ").to.be.equal('" + _d[_k] + "');";
@@ -110,7 +111,7 @@ function generateAssertions(_d) {
     if (whatIsThis(_d) == 2) generateAssertionsForArray(path, _d);
     if (whatIsThis(_d) == 3) {
         if (_d.indexOf("{{") > -1) {
-            _tc += "expect(" + path + ").to.be.equal(" + _d.split("}}").shift().split("{{").pop() + ");";
+            _tc += "expect(" + path + ").to.be.equal(" + _d.split(delimiters[1]).shift().split(delimiters[0]).pop() + ");";
         } else {
             _tc += "expect(" + path + ").to.be.a('string');";
             _tc += "expect(" + path + ").to.be.equal('" + _d + "');";
@@ -131,12 +132,13 @@ function parseData(_d){
 }
 
 function urlSubstitute(_url) {
-    let url = _url.split("}}").shift().split("{{");
+    let url = _url.split(delimiters[1]).shift().split(delimiters[0]);
     if (url.length == 1) return "\"" + _url + "\"";
     return "\"" + url[0] + "\" + " + url[1];
 }
 
-e.test = function(tc, endpoint, request, response) {
+e.test = function(tc, endpoint, request, response, _delimiters) {
+    delimiters = _delimiters ? _delimiters : ["{{", "}}"];
     var expectedResponseHeaders = response && response.headers ? response.headers : null;
     _tc += "it('" + tc + "', function (done) {";
     _tc += "logger.info('Title: " + tc + "');";
@@ -162,7 +164,7 @@ e.test = function(tc, endpoint, request, response) {
     if (request.headers) {
         for (var k in request.headers) {
             let val = request.headers[k];
-            if (val.indexOf("{{") > -1) val = val.split("}}").shift().split("{{").pop();
+            if (val.indexOf(delimiters[0]) > -1) val = val.split(delimiters[1]).shift().split(delimiters[0]).pop();
             else val = "\"" + val + "\"";
             _tc += ".set(\"" + k + "\"," + val + ")";
         }

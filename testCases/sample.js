@@ -98,12 +98,14 @@ module.exports = {
         },
         {
             "endpoint": "1",
+            "delimiters": ["<%", "%>"],
             "name": "Send data",
             "request": {
                 "method": "POST",
                 "url": "/data",
                 "headers": {
-                    "token": "{{loginResponse.token}}"
+                    "thisHeaderWontBeParsed": "{{loginResponse.token}}",
+                    "token": "<%loginResponse.token%>"
                 },
                 "payloadFile": "sampleRequestPayload.json",
                 "responseCode": 200,
