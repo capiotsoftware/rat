@@ -4,7 +4,7 @@
 var gen = require("../engine/generator.js");
 var cli = require("../utils/cli");
 
-let version = "1.0.1";
+let version = "1.0.2";
 
 if (process.argv.length < 3) cli.usage();
 let option = process.argv[2].toString().toLowerCase();

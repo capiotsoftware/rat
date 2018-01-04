@@ -192,8 +192,8 @@ e.test = function(tc, endpoint, request, response, _delimiters) {
     if (response && (response.body || response.bodyFile)) {
         var expectedResponse = "";
 
-        if (response.body) expectedResponse = parseData(JSON.stringify(response.payload));
-        else if (response.bodyFile) expectedResponse = parseData(cli.readFile("lib/" + response.payloadFile));
+        if (response.body) expectedResponse = parseData(JSON.stringify(response.body));
+        else if (response.bodyFile) expectedResponse = parseData(cli.readFile("lib/" + response.bodyFile));
 
         _tc += "expect(err).to.be.null;";
         _tc += "expect(res.body).to.be.not.null;";
