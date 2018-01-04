@@ -128,7 +128,7 @@ function generateAssertions(_d) {
 }
 
 function parseData(_d){
-    return _d.replace(/}}\"/gi, "").replace(/\"{{/gi, "");
+    return _d.replace(/'+delimiters[1]+'\"/gi, "").replace(/\"'+delimiters[1]+'/gi, "");
 }
 
 function urlSubstitute(_url) {
