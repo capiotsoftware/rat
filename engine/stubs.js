@@ -49,8 +49,8 @@ function generateAssertionsForArray(_p, _d) {
                     generateAssertionsForArray(path, _e);
                     break;
                 case 3:
-                    if (_e.indexOf("{{") > -1) {
-                        _tc += "expect(" + path + ").to.be.equal(" + _e.split(delimiters[1]).shift().split(delimiters[0]).pop() + ");";
+                    if (_e.indexOf(delimiters[0]) > -1) {
+                        _tc += "expect(" + path + ").to.be.equal(" + render(_e) + ");";
                     } else {
                         _tc += "expect(" + path + ").to.be.a('string');";
                         _tc += "expect(" + path + ").to.be.equal('" + _e + "');";
@@ -83,8 +83,8 @@ function generateAssertionsForJson(_p, _d) {
                 generateAssertionsForArray(path, _d[_k]);
                 break;
             case 3:
-                if (_d[_k].indexOf("{{") > -1) {
-                    _tc += "expect(" + path + ").to.be.equal(" + _d[_k].split(delimiters[1]).shift().split(delimiters[0]).pop() + ");";
+                if (_d[_k].indexOf(delimiters[0]) > -1) {
+                    _tc += "expect(" + path + ").to.be.equal(" + render(_d[_k]) + ");";
                 } else {
                     _tc += "expect(" + path + ").to.be.a('string');";
                     _tc += "expect(" + path + ").to.be.equal('" + _d[_k] + "');";
@@ -110,8 +110,8 @@ function generateAssertions(_d) {
     if (whatIsThis(_d) == 1) generateAssertionsForJson(path, _d);
     if (whatIsThis(_d) == 2) generateAssertionsForArray(path, _d);
     if (whatIsThis(_d) == 3) {
-        if (_d.indexOf("{{") > -1) {
-            _tc += "expect(" + path + ").to.be.equal(" + _d.split(delimiters[1]).shift().split(delimiters[0]).pop() + ");";
+        if (_d.indexOf(delimiters[0]) > -1) {
+            _tc += "expect(" + path + ").to.be.equal(" + render(_d) + ");";
         } else {
             _tc += "expect(" + path + ").to.be.a('string');";
             _tc += "expect(" + path + ").to.be.equal('" + _d + "');";
@@ -127,8 +127,25 @@ function generateAssertions(_d) {
     }
 }
 
-function parseData(_d){
-    return _d.replace(/'+delimiters[1]+'\"/gi, "").replace(/\"'+delimiters[1]+'/gi, "");
+function parseData(_d) {
+    var re1 = new RegExp(delimiters[0], "g");
+    var re2 = new RegExp(delimiters[1], "g");
+    return _d.replace(re1, "\" + ").replace(re2, " + \"");
+}
+
+function render(_s) {
+    if (_s.indexOf(delimiters[0]) > -1) {
+        var d = "";
+        _s = _s.split(delimiters[0]);
+        _s.forEach(_s1 => {
+            if (_s1.indexOf(delimiters[1]) > -1) {
+                _s1 = _s1.split(delimiters[1]);
+                d += ((d.length > 0) ? " + " : "") + _s1[0];
+                if (_s1[1].length > 0) d += ' + "' + _s1[1] + '"';
+            } else if (_s1.length > 0) d += '"' + _s1 + '"';
+        });
+        return d;
+    } else return '"' + _s + '"';
 }
 
 function urlSubstitute(_url) {
@@ -164,7 +181,7 @@ e.test = function(tc, endpoint, request, response, _delimiters) {
     if (request.headers) {
         for (var k in request.headers) {
             let val = request.headers[k];
-            if (val.indexOf(delimiters[0]) > -1) val = val.split(delimiters[1]).shift().split(delimiters[0]).pop();
+            if (val.indexOf(delimiters[0]) > -1) val = render(val);
             else val = "\"" + val + "\"";
             _tc += ".set(\"" + k + "\"," + val + ")";
         }
@@ -186,14 +203,14 @@ e.test = function(tc, endpoint, request, response, _delimiters) {
         _tc += request.saveResponse + " = res.body;";
     if (expectedResponseHeaders) {
         for (var _header in expectedResponseHeaders)
-            if (expectedResponseHeaders[_header]) _tc += "expect(res.headers." + _header.toLowerCase() + ").to.equal('" + expectedResponseHeaders[_header] + "');";
+            if (expectedResponseHeaders[_header]) _tc += "expect(res.headers." + _header.toLowerCase() + ").to.equal(" + render(expectedResponseHeaders[_header]) + ");";
             else _tc += "expect(res.headers." + _header.toLowerCase() + ").to.be.not.empty;";
     }
     if (response && (response.body || response.bodyFile)) {
         var expectedResponse = "";
 
-        if (response.body) expectedResponse = JSON.parse(parseData(JSON.stringify(response.body)));
-        else if (response.bodyFile) expectedResponse = JSON.parse(parseData(cli.readFile("lib/" + response.bodyFile)));
+        if (response.body) expectedResponse = response.body;
+        else if (response.bodyFile) expectedResponse = JSON.parse(cli.readFile("lib/" + response.bodyFile));
 
         _tc += "expect(err).to.be.null;";
         _tc += "expect(res.body).to.be.not.null;";
