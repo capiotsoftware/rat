@@ -34,12 +34,16 @@ e.init = () => {
     new buffer.Buffer(execSync("npm link mocha"));
     new buffer.Buffer(execSync("npm link supertest"));
     if (!fs.existsSync("logs")) fs.mkdirSync("logs");
-    if (!fs.existsSync("lib")) fs.mkdirSync("lib");
-    if (!fs.existsSync("scripts")) fs.mkdirSync("scripts");
+    if (!fs.existsSync("lib")) {
+        fs.mkdirSync("lib");
+        fs.writeFileSync(requestFileName, JSON.stringify(samplePayload, null, " "));
+        fs.writeFileSync(responseFileName, JSON.stringify(sampleResonse, null, " "));
+    }
+    if (!fs.existsSync("scripts")) {
+        fs.mkdirSync("scripts");
+        fs.writeFileSync(testFileName, JSON.stringify(sampleTestCase, null, " "));
+    }
     if (!fs.existsSync("tests")) fs.mkdirSync("tests");
-    fs.writeFileSync(testFileName, JSON.stringify(sampleTestCase, null, " "));
-    fs.writeFileSync(requestFileName, JSON.stringify(samplePayload, null, " "));
-    fs.writeFileSync(responseFileName, JSON.stringify(sampleResonse, null, " "));
     console.log("Done!");
     process.exit();
 };
