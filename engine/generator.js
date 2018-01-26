@@ -33,13 +33,7 @@ e.run = function(_tcFile) {
     let fileName = process.platform == "win32" ? "scripts\\" : "scripts/";
     tcFile = fileName + _tcFile;
     mocha.addFile(tcFile);
-    var op = spawnSync("mocha" ,["-b", tcFile], { stdio: [0, 1, 2, 3] });
-    // var data = "";
-    // op.stdout.on('data', (_d) => data += _d);
-    // op.stderr.on('data', (data) => {
-    //     console.log(data.toString());
-    // });
-    // op.on('close', (code) => console.log(data));
+    var op = spawnSync("mocha", ["-b", tcFile], { stdio: [0, 1, 2, 3] });
     if (op.stdout) console.log(op.stdout);
 };
 
