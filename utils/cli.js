@@ -23,9 +23,9 @@ e.usage = () => {
 
 e.init = () => {
     console.log("Initializing folder...");
-    var sampleTestCase = require("../testCases/sample.js");
-    var samplePayload = require("../testCases/payload.js");
-    var sampleResonse = require("../testCases/response.js");
+    var sampleTestCase = fs.readFileSync(__dirname + "/../testCases/sample.json");
+    var samplePayload = fs.readFileSync(__dirname + "/../testCases/payload.json");
+    var sampleResonse = fs.readFileSync(__dirname + "/../testCases/response.json");
     let testFileName = process.cwd() + (process.platform == "win32" ? "\\tests\\" : "/tests/") + "sample.json";
     let requestFileName = process.cwd() + (process.platform == "win32" ? "\\lib\\" : "/lib/") + "sampleRequestPayload.json";
     let responseFileName = process.cwd() + (process.platform == "win32" ? "\\lib\\" : "/lib/") + "sampleResponsePayload.json";
@@ -36,14 +36,12 @@ e.init = () => {
     if (!fs.existsSync("logs")) fs.mkdirSync("logs");
     if (!fs.existsSync("lib")) {
         fs.mkdirSync("lib");
-        fs.writeFileSync(requestFileName, JSON.stringify(samplePayload, null, " "));
-        fs.writeFileSync(responseFileName, JSON.stringify(sampleResonse, null, " "));
+        fs.writeFileSync(requestFileName, samplePayload.toString());
+        fs.writeFileSync(responseFileName, sampleResonse.toString());
     }
-    if (!fs.existsSync("scripts")) {
-        fs.mkdirSync("scripts");
-        fs.writeFileSync(testFileName, JSON.stringify(sampleTestCase, null, " "));
-    }
+    if (!fs.existsSync("generatedTests")) fs.mkdirSync("generatedTests");
     if (!fs.existsSync("tests")) fs.mkdirSync("tests");
+    fs.writeFileSync(testFileName, sampleTestCase.toString());
     console.log("Done!");
     process.exit();
 };
@@ -54,13 +52,13 @@ e.clean = () => {
         new buffer.Buffer(execSync("rmdir /s /q node_modules"));
         new buffer.Buffer(execSync("rmdir /s /q logs"));
         new buffer.Buffer(execSync("rmdir /s /q lib"));
-        new buffer.Buffer(execSync("rmdir /s /q scripts"));
+        new buffer.Buffer(execSync("rmdir /s /q generatedTests"));
         new buffer.Buffer(execSync("rmdir /s /q tests"));
     } else {
         new buffer.Buffer(execSync("rm -rf node_modules"));
         new buffer.Buffer(execSync("rm -rf logs"));
         new buffer.Buffer(execSync("rm -rf lib"));
-        new buffer.Buffer(execSync("rm -rf scripts"));
+        new buffer.Buffer(execSync("rm -rf generatedTests"));
         new buffer.Buffer(execSync("rm -rf tests"));
     }
     console.log("Done!");
@@ -95,8 +93,8 @@ e.getTestFiles = () => {
 };
 
 e.getTestScripts = () => {
-    let fileName = process.platform == "win32" ? "scripts\\" : "scripts/";
-    let files = fs.readdirSync("scripts");
+    let fileName = process.platform == "win32" ? "generatedTests\\" : "generatedTests/";
+    let files = fs.readdirSync("generatedTests");
     let fileList = [];
     files.forEach(_f => {
         if (_f && fs.existsSync(fileName + _f)) fileList.push(_f);

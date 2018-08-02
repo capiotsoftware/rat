@@ -1,5 +1,6 @@
-module.exports = {
-    "name": "Alice Cooper",
+{
+    "_id": "{{data._id}}",
+    "name": "{{data.name}}",
     "address": {
         "line1": "#404 Pritam Woods",
         "line2": "Bellandur",
@@ -11,4 +12,4 @@ module.exports = {
     "mobile": "+91 987 654 4323",
     "nameOfChildren": ["Alpha Cooper", "Beta Cooper", "Charlie Cooper"],
     "dateOfBirths": "12/10/2006"
-};
+}

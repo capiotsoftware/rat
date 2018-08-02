@@ -30,7 +30,7 @@ e.generate = (_tcFile) => {
 };
 
 e.run = function(_tcFile) {
-    let fileName = process.platform == "win32" ? "scripts\\" : "scripts/";
+    let fileName = process.platform == "win32" ? "generatedTests\\" : "generatedTests/";
     tcFile = fileName + _tcFile;
     mocha.addFile(tcFile);
     var op = spawnSync("mocha", ["-b", tcFile], { stdio: [0, 1, 2, 3] });

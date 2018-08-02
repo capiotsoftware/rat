@@ -187,7 +187,7 @@ e.test = function(tc, endpoint, request, response, _delimiters) {
         }
     }
 
-    _tc += ".expect(" + request.responseCode + ")";
+    if (request.responseCode) _tc += ".expect(" + request.responseCode + ")";
 
     _tc += ".end(function (err, res) {logger.info('Request');";
     _tc += "logger.info('Request METHOD', res.request.method);";
@@ -226,9 +226,9 @@ e.test = function(tc, endpoint, request, response, _delimiters) {
 
 e.generate = function(_f, _stopOnError) {
     let suffix = _f.split(".")[0] + ".js";
-    var opf = "scripts/" + suffix;
-    if (os.platform() == "win32") opf = "scripts\\" + suffix;
-    let tc = "var winston = require('winston'); function getDateTime() {var sd = new Date();var syear = sd.getFullYear();var smonth = ('0' + (sd.getMonth() + 1)).slice(-2);var sdate = ('0' + sd.getDate()).slice(-2);var shours = ('0' + sd.getHours()).slice(-2);var sminutes = ('0' + sd.getMinutes()).slice(-2);var sseconds = ('0' + sd.getSeconds()).slice(-2);var startDate = syear + '-' + smonth + '-' + sdate;var startTime = shours + '-' + sminutes + '-' + sseconds;return startDate + '_' + startTime;}; var logger = new (winston.Logger)({transports: [new (winston.transports.File)({ filename: 'logs/Log_'+getDateTime()+'_" + _f + ".log'})]});" + _tc;
+    var opf = "generatedTests/" + suffix;
+    if (os.platform() == "win32") opf = "generatedTests\\" + suffix;
+    let tc = "var winston = require('winston'); function getDateTime() {var sd = new Date();var syear = sd.getFullYear();var smonth = ('0' + (sd.getMonth() + 1)).slice(-2);var sdate = ('0' + sd.getDate()).slice(-2);var shours = ('0' + sd.getHours()).slice(-2);var sminutes = ('0' + sd.getMinutes()).slice(-2);var sseconds = ('0' + sd.getSeconds()).slice(-2);var startDate = syear + '-' + smonth + '-' + sdate;var startTime = shours + '-' + sminutes + '-' + sseconds;return startDate + '_' + startTime;}; var logger = winston.createLogger({transports: [new (winston.transports.File)({ filename: 'logs/Log_'+getDateTime()+'_" + _f + ".log'})]});" + _tc;
     fs.writeFileSync(opf, tc);
     return opf;
 };
