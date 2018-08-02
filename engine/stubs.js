@@ -195,13 +195,16 @@ e.test = function(tc) {
     if (request.responseCode) _tc += ".expect(" + request.responseCode + ")";
 
     _tc += ".end(function (err, res) {logger.info('Request');";
-    _tc += "logger.info('Request METHOD', res.method);";
-    _tc += "logger.info('Request URL', res.url);";
-    _tc += "logger.info('Request HEADER', res.header);";
-    _tc += "logger.info('Request DATA', res._data);";
-    _tc += "logger.info('Response STATUS', res.statusCode);";
-    _tc += "logger.info('Response HEADER', res.headers);";
-    _tc += "logger.info('Response BODY', res.body);";
+    _tc += "logger.info('Request METHOD :: ' + '" + request.method + "');";
+    _tc += "logger.info('Request URL :: ' + " + urlSubstitute(request.url) + ");";
+    if (request.headers) _tc += "logger.info('Request HEADER :: ' + " + JSON.stringify(request.headers) + ");";
+    if (request.method == "PUT" || request.method == "POST")
+        if (request.payload) _tc += "logger.info('Request DATA :: ' + " + (parseData(JSON.stringify(request.payload))) + ");";
+        else if (request.payloadFile) _tc += "logger.info('Request DATA from file :: ' + '" + request.payloadFile + "');";
+    else _tc += "logger.info('Request DATA :: {} ');";
+    _tc += "logger.info('Response STATUS :: ' + res.statusCode);";
+    _tc += "logger.info('Response HEADER :: ' + JSON.stringify(res.headers));";
+    _tc += "logger.info('Response BODY :: ' + JSON.stringify(res.body));";
     _tc += "try{"
     _tc += "expect(res.status).to.equal(" + request.responseCode + ");";
     if (request.saveResponse)
@@ -234,7 +237,7 @@ e.generate = function(_f, _stopOnError) {
     let suffix = _f.split(".")[0] + ".js";
     var opf = "generatedTests/" + suffix;
     if (os.platform() == "win32") opf = "generatedTests\\" + suffix;
-    let tc = "var winston = require('winston'); function getDateTime() {var sd = new Date();var syear = sd.getFullYear();var smonth = ('0' + (sd.getMonth() + 1)).slice(-2);var sdate = ('0' + sd.getDate()).slice(-2);var shours = ('0' + sd.getHours()).slice(-2);var sminutes = ('0' + sd.getMinutes()).slice(-2);var sseconds = ('0' + sd.getSeconds()).slice(-2);var startDate = syear + '-' + smonth + '-' + sdate;var startTime = shours + '-' + sminutes + '-' + sseconds;return startDate + '_' + startTime;}; var logger = winston.createLogger({transports: [new (winston.transports.File)({ filename: 'logs/Log_'+getDateTime()+'_" + _f + ".log'})]});" + _tc;
+    let tc = "const log4js = require('log4js'); function getDateTime() {var sd = new Date();var syear = sd.getFullYear();var smonth = ('0' + (sd.getMonth() + 1)).slice(-2);var sdate = ('0' + sd.getDate()).slice(-2);var shours = ('0' + sd.getHours()).slice(-2);var sminutes = ('0' + sd.getMinutes()).slice(-2);var sseconds = ('0' + sd.getSeconds()).slice(-2);var startDate = syear + '-' + smonth + '-' + sdate;var startTime = shours + '-' + sminutes + '-' + sseconds;return startDate + '_' + startTime;}; log4js.configure({ appenders: { file: { type: 'file', filename: 'Log_'+getDateTime()+'_" + _f + ".log' } }, categories: { default: { appenders: ['file'], level: 'info' } }});const logger = log4js.getLogger('[" + _f + "]');" + _tc;
     fs.writeFileSync(opf, tc);
     return opf;
 };
