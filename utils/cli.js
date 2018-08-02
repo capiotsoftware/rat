@@ -40,8 +40,10 @@ e.init = () => {
         fs.writeFileSync(responseFileName, sampleResonse.toString());
     }
     if (!fs.existsSync("generatedTests")) fs.mkdirSync("generatedTests");
-    if (!fs.existsSync("tests")) fs.mkdirSync("tests");
-    fs.writeFileSync(testFileName, sampleTestCase.toString());
+    if (!fs.existsSync("tests")) {
+        fs.mkdirSync("tests");
+        fs.writeFileSync(testFileName, sampleTestCase.toString());
+    }
     console.log("Done!");
     process.exit();
 };
