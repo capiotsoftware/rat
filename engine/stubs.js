@@ -10,7 +10,8 @@ e.initTestSuite = function(_suitName, _url) {
     _tc = "";
     _tc += "var expect = require('chai').expect;var assert = require('chai').assert;";
     _url.forEach((_url, _i) => {
-        _tc += "var api" + (_i + 1) + " = require('supertest')('" + _url + "');"
+        _tc += "var url" + (_i + 1) + " = process.env.URL1 ? process.env.URL1 : '" + _url + "';";
+        _tc += "var api" + (_i + 1) + " = require('supertest')(url" + (_i + 1) + ");"
     });
     _tc += "describe('" + _suitName + "', function () {";
 };
@@ -194,10 +195,10 @@ e.test = function(tc) {
     if (request.responseCode) _tc += ".expect(" + request.responseCode + ")";
 
     _tc += ".end(function (err, res) {logger.info('Request');";
-    _tc += "logger.info('Request METHOD', res.request.method);";
-    _tc += "logger.info('Request URL', res.request.url);";
-    _tc += "logger.info('Request HEADER', res.request.header);";
-    _tc += "logger.info('Request DATA', res.request._data);";
+    _tc += "logger.info('Request METHOD', res.method);";
+    _tc += "logger.info('Request URL', res.url);";
+    _tc += "logger.info('Request HEADER', res.header);";
+    _tc += "logger.info('Request DATA', res._data);";
     _tc += "logger.info('Response STATUS', res.statusCode);";
     _tc += "logger.info('Response HEADER', res.headers);";
     _tc += "logger.info('Response BODY', res.body);";
