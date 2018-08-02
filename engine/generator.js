@@ -21,7 +21,7 @@ e.generate = (_tcFile) => {
     });
 
     testCase.tests.forEach(_test => {
-        stubs.test(_test.name, _test.endpoint, _test.request, _test.response, _test.delimiters);
+        stubs.test(_test);
     });
 
     stubs.endTestSuite();

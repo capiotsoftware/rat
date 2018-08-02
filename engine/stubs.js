@@ -154,11 +154,15 @@ function urlSubstitute(_url) {
     return "\"" + url[0] + "\" + " + url[1];
 }
 
-e.test = function(tc, endpoint, request, response, _delimiters) {
-    delimiters = _delimiters ? _delimiters : ["{{", "}}"];
+e.test = function(tc) {
+    var name = tc.name;
+    delimiters = tc.delimiters ? tc.delimiters : ["{{", "}}"];
+    var response = tc.response;
+    var request = tc.request;
+    var endpoint = tc.endpoint;
     var expectedResponseHeaders = response && response.headers ? response.headers : null;
-    _tc += "it('" + tc + "', function (done) {";
-    _tc += "logger.info('Title: " + tc + "');";
+    _tc += "it('" + name + "', function (done) {";
+    _tc += "logger.info('Title: " + name + "');";
 
     if (request.method == "POST") {
         _tc += "var request = api" + endpoint + ".post('" + request.url + "')";
@@ -217,10 +221,11 @@ e.test = function(tc, endpoint, request, response, _delimiters) {
 
         generateAssertions(expectedResponse);
     }
-    _tc += "logger.info('" + tc + " :: PASS');";
+    _tc += "logger.info('" + name + " :: PASS');";
     _tc += "}catch (_err){logger.error(_err.message);";
-    _tc += "logger.info('" + tc + " :: FAIL');";
-    _tc += "assert.fail(_err.actual, _err.expected, _err.message);};";
+    _tc += "logger.info('" + name + " :: FAIL');";
+    if (!tc.continueOnError) _tc += "assert.fail(_err.actual, _err.expected, _err.message);";
+    _tc += "};";
     _tc += "done();});});";
 };
 
