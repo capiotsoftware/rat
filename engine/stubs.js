@@ -166,8 +166,10 @@ e.test = function(tc) {
     _tc += "logger.info('Title: " + name + "');";
     if (tc.wait) {
         _tc += "this.timeout(" + (tc.wait + 500) + ");";
-        _tc += "logger.info('Chanding default timeout for this testcase to " + (tc.wait + 500) + "');";
+        _tc += "logger.info('Changing default timeout for this testcase to " + (tc.wait + 500) + "');";
     }
+
+    _tc += "try{";
 
     if (request.method == "POST") {
         _tc += "var request = api" + endpoint + ".post('" + request.url + "')";
@@ -234,8 +236,12 @@ e.test = function(tc) {
     _tc += "logger.info('" + name + " :: FAIL');";
     if (!tc.continueOnError) _tc += "assert.fail(_err.actual, _err.expected, _err.message);";
     _tc += "};";
-    if (tc.wait) _tc += "setTimeout(() => done(), " + tc.wait + ");});});";
-    else _tc += "done();});});";
+    if (tc.wait) _tc += "setTimeout(() => done(), " + tc.wait + ");});";
+    else _tc += "done();});";
+    _tc += "}catch (_err){logger.error(_err.message);";
+    if (!tc.continueOnError) _tc += "assert.fail(0, 1, _err.message);};";
+    else _tc += "done();};";
+    _tc += "});";
 };
 
 e.generate = function(_f, _stopOnError) {
