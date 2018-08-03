@@ -164,6 +164,10 @@ e.test = function(tc) {
     var expectedResponseHeaders = response && response.headers ? response.headers : null;
     _tc += "it('" + name + "', function (done) {";
     _tc += "logger.info('Title: " + name + "');";
+    if (tc.wait) {
+        _tc += "this.timeout(" + (tc.wait + 500) + ");";
+        _tc += "logger.info('Chanding default timeout for this testcase to " + (tc.wait + 500) + "');";
+    }
 
     if (request.method == "POST") {
         _tc += "var request = api" + endpoint + ".post('" + request.url + "')";
@@ -230,7 +234,8 @@ e.test = function(tc) {
     _tc += "logger.info('" + name + " :: FAIL');";
     if (!tc.continueOnError) _tc += "assert.fail(_err.actual, _err.expected, _err.message);";
     _tc += "};";
-    _tc += "done();});});";
+    if (tc.wait) _tc += "setTimeout(() => done(), " + tc.wait + ");});});";
+    else _tc += "done();});});";
 };
 
 e.generate = function(_f, _stopOnError) {
