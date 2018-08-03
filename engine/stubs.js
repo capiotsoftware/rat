@@ -197,9 +197,9 @@ e.test = function(tc) {
     _tc += ".end(function (err, res) {logger.info('Request');";
     _tc += "logger.info('Request METHOD :: ' + '" + request.method + "');";
     _tc += "logger.info('Request URL :: ' + " + urlSubstitute(request.url) + ");";
-    if (request.headers) _tc += "logger.info('Request HEADER :: ' + " + JSON.stringify(request.headers) + ");";
+    if (request.headers) _tc += "logger.info('Request HEADER :: ' + '" + JSON.stringify(request.headers) + "');";
     if (request.method == "PUT" || request.method == "POST")
-        if (request.payload) _tc += "logger.info('Request DATA :: ' + " + (parseData(JSON.stringify(request.payload))) + ");";
+        if (request.payload) _tc += "logger.info('Request DATA :: ' + '" + (parseData(JSON.stringify(request.payload))) + "');";
         else if (request.payloadFile) _tc += "logger.info('Request DATA from file :: ' + '" + request.payloadFile + "');";
     else _tc += "logger.info('Request DATA :: {} ');";
     _tc += "logger.info('Response STATUS :: ' + res.statusCode);";
