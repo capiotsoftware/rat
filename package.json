@@ -1,5 +1,5 @@
 {
-  "name": "capiot_rest_api_tester",
+  "name": "capiotratjs",
   "version": "1.0.0",
   "description": "ReST APi Tester",
   "main": "./bin/app.js",
@@ -9,9 +9,7 @@
   "author": "Jerry M.",
   "license": "ISC",
   "dependencies": {
-    "body-parser": "^1.18.1",
-    "express": "^4.15.4",
-    "mocha": "^3.5.3"
+    "mocha": "^5.2.0"
   },
   "bin": {
     "rat": "./bin/app.js"

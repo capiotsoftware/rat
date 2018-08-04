@@ -28,10 +28,7 @@ e.init = () => {
     let testFileName = process.cwd() + (process.platform == "win32" ? "\\tests\\" : "/tests/") + "sample.json";
     let requestFileName = process.cwd() + (process.platform == "win32" ? "\\lib\\" : "/lib/") + "sampleRequestPayload.json";
     let responseFileName = process.cwd() + (process.platform == "win32" ? "\\lib\\" : "/lib/") + "sampleResponsePayload.json";
-    new buffer.Buffer(execSync("npm link log4js"));
-    new buffer.Buffer(execSync("npm link chai"));
-    new buffer.Buffer(execSync("npm link mocha"));
-    new buffer.Buffer(execSync("npm link supertest"));
+    new buffer.Buffer(execSync("npm i log4js chai mocha supertest request request-promise"));
     if (!fs.existsSync("lib")) {
         fs.mkdirSync("lib");
         fs.writeFileSync(requestFileName, samplePayload.toString());

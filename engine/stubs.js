@@ -1,6 +1,6 @@
-var os = require("os");
-var fs = require("fs");
-var cli = require("../utils/cli");
+const os = require("os");
+const fs = require("fs");
+const cli = require("../utils/cli");
 
 var e = {};
 var _tc = "";
@@ -157,37 +157,42 @@ function urlSubstitute(_url) {
 
 e.test = function(tc) {
     var name = tc.name;
+    if(tc.continueOnError) name += " [Continue on error]";
     delimiters = tc.delimiters ? tc.delimiters : ["{{", "}}"];
     var response = tc.response;
     var request = tc.request;
     var endpoint = tc.endpoint;
     var expectedResponseHeaders = response && response.headers ? response.headers : null;
     _tc += "it('" + name + "', function (done) {";
+    _tc += "try{";
     _tc += "logger.info('Title: " + name + "');";
     if (tc.wait) {
-        _tc += "this.timeout(" + (tc.wait + 500) + ");";
-        _tc += "logger.info('Changing default timeout for this testcase to " + (tc.wait + 500) + "');";
+        _tc += "this.timeout(" + (tc.wait * 1000 + 500) + ");";
+        _tc += "logger.info('Changing default timeout for this testcase to " + (tc.wait) + " seconds');";
+    } else if (tc.waitFor) {
+        let timeout = 10;
+        if(tc.waitFor.timeout) timeout = tc.waitFor.timeout;
+        _tc += "this.timeout(" + (timeout * 1000) + ");";
+        _tc += "logger.info('Changing default timeout for this testcase to " + (timeout) + " seconds');";
     }
-
-    _tc += "try{";
 
     if (request.method == "POST") {
-        _tc += "var request = api" + endpoint + ".post('" + request.url + "')";
+        _tc += "api" + endpoint + ".post(\"" + parseData(request.url) + "\")";
         if (request.payload) _tc += ".send(" + parseData(JSON.stringify(request.payload)) + ")";
         else if (request.payloadFile) _tc += ".send(" + parseData(cli.readFile("lib/" + request.payloadFile)) + ")";
         else _tc += ".send({})";
     }
 
-    if (request.method == "GET") _tc += "api" + endpoint + ".get(" + urlSubstitute(request.url) + ")";
+    if (request.method == "GET") _tc += "api" + endpoint + ".get(\"" + parseData(request.url) + "\")";
 
     if (request.method == "PUT") {
-        _tc += "api" + endpoint + ".put(" + urlSubstitute(request.url) + ")";
+        _tc += "api" + endpoint + ".put(\"" + urlSubstitute(request.url) + "\")";
         if (request.payload) _tc += ".send(" + parseData(JSON.stringify(request.payload)) + ")";
         else if (request.payloadFile) _tc += ".send(" + parseData(cli.readFile("lib/" + request.payloadFile)) + ")";
         else _tc += ".send({})";
     }
 
-    if (request.method == "DELETE") _tc += "api" + endpoint + ".delete(" + urlSubstitute(request.url) + ")";
+    if (request.method == "DELETE") _tc += "api" + endpoint + ".delete(\"" + parseData(request.url) + "\")";
 
     if (request.headers) {
         for (var k in request.headers) {
@@ -202,7 +207,7 @@ e.test = function(tc) {
 
     _tc += ".end(function (err, res) {logger.info('Request');";
     _tc += "logger.info('Request METHOD :: ' + '" + request.method + "');";
-    _tc += "logger.info('Request URL :: ' + " + urlSubstitute(request.url) + ");";
+    _tc += "logger.info('Request URL :: ' + \"" + parseData(request.url) + "\");";
     if (request.headers) _tc += "logger.info('Request HEADER :: ' + '" + JSON.stringify(request.headers) + "');";
     if (request.method == "PUT" || request.method == "POST")
         if (request.payload) _tc += "logger.info('Request DATA :: ' + '" + (parseData(JSON.stringify(request.payload))) + "');";
@@ -228,27 +233,55 @@ e.test = function(tc) {
 
         _tc += "expect(err).to.be.null;";
         _tc += "expect(res.body).to.be.not.null;";
-
+        
         generateAssertions(expectedResponse);
+        
+        if(response.list) _tc += "let check = checkInList(res.body, " + JSON.stringify(response.list) + ");expect(check, \"Check data in list failed!\").to.be.equal(true);"
     }
-    _tc += "logger.info('" + name + " :: PASS');";
+    // wait or waitFor
+    if (tc.wait) _tc += "setTimeout(() => {logger.info('" + name + " :: PASS'); done();}, " + (tc.wait * 1000) + ");";
+    else if (tc.waitFor) {
+        let timeout = 10;
+        if(tc.waitFor.timeout) timeout = tc.waitFor.timeout;
+        _tc += "var d = new Date();d.setSeconds(d.getSeconds() + " + timeout + ");"
+        _tc += "waitForInAPI({";
+        _tc += "'method': 'GET',"
+        let otherOptions = [];
+        otherOptions.push("'uri': url" + tc.waitFor.request.endpoint + "+" + urlSubstitute(tc.waitFor.request.uri));
+        if(tc.waitFor.request.qs) otherOptions.push("'qs': "+ JSON.stringify(tc.waitFor.request.qs));
+        if (tc.waitFor.request.headers) {
+            let header = "'headers':{"
+            let headers = [];
+            for (var k in tc.waitFor.request.headers) {
+                let val = request.headers[k];
+                if (val.indexOf(delimiters[0]) > -1) val = render(val);
+                else val = "\"" + val + "\"";
+                headers.push("'" + k + "':" + val + ",");
+            }
+            header += headers.join(",");
+            header += "}";
+            otherOptions.push(header);
+        }
+        _tc += otherOptions.join(",");
+        _tc += "},'" + tc.waitFor.key+ "',";
+        _tc += "'" + tc.waitFor.value+ "',d";
+        _tc += ").then(() => {logger.info('" + name + " :: PASS'); done();}, ()=> assert.equal(1,0,'waitForInAPI :: FAIL!'));"
+    } else _tc += "logger.info('" + name + " :: PASS'); done();";
+
     _tc += "}catch (_err){logger.error(_err.message);";
     _tc += "logger.info('" + name + " :: FAIL');";
     if (!tc.continueOnError) _tc += "assert.fail(_err.actual, _err.expected, _err.message);";
-    _tc += "};";
-    if (tc.wait) _tc += "setTimeout(() => done(), " + tc.wait + ");});";
-    else _tc += "done();});";
+    _tc += "done();};});";
     _tc += "}catch (_err){logger.error(_err.message);";
-    if (!tc.continueOnError) _tc += "assert.fail(0, 1, _err.message);};";
-    else _tc += "done();};";
-    _tc += "});";
+    if (!tc.continueOnError) _tc += "assert.fail(0,1, _err.message);";
+    _tc += "done();}});";
 };
 
 e.generate = function(_f, _stopOnError) {
     let suffix = _f.split(".")[0] + ".js";
     var opf = "generatedTests/" + suffix;
     if (os.platform() == "win32") opf = "generatedTests\\" + suffix;
-    let tc = "const log4js = require('log4js'); function getDateTime() {var sd = new Date();var syear = sd.getFullYear();var smonth = ('0' + (sd.getMonth() + 1)).slice(-2);var sdate = ('0' + sd.getDate()).slice(-2);var shours = ('0' + sd.getHours()).slice(-2);var sminutes = ('0' + sd.getMinutes()).slice(-2);var sseconds = ('0' + sd.getSeconds()).slice(-2);var startDate = syear + '-' + smonth + '-' + sdate;var startTime = shours + '-' + sminutes + '-' + sseconds;return startDate + '_' + startTime;}; log4js.configure({ appenders: { file: { type: 'file', filename: 'Log_'+getDateTime()+'_" + _f + ".log' } }, categories: { default: { appenders: ['file'], level: 'info' } }});const logger = log4js.getLogger('[" + _f + "]');" + _tc;
+    let tc = "const log4js = require('log4js'); const request = require('request-promise'); function getDateTime() {var sd = new Date();var syear = sd.getFullYear();var smonth = ('0' + (sd.getMonth() + 1)).slice(-2);var sdate = ('0' + sd.getDate()).slice(-2);var shours = ('0' + sd.getHours()).slice(-2);var sminutes = ('0' + sd.getMinutes()).slice(-2);var sseconds = ('0' + sd.getSeconds()).slice(-2);var startDate = syear + '-' + smonth + '-' + sdate;var startTime = shours + '-' + sminutes + '-' + sseconds;return startDate + '_' + startTime;}; function waitForInAPI(_option, _key, _value, _till){if(_till > (new Date())){return request(_option).then(_d => {if (JSON.parse(_d)[_key] == _value) return true;else {return waitForInAPI(_option, _key, _value, _till);}}, _e => {return false});} else return false;}; function checkInList(_list, _values) {let flag = false;_list.forEach(_e => {let innerFlag = true;for (_k in _values) {innerFlag = innerFlag && (_e[_k] == _values[_k]);};if (innerFlag) flag = true;});return flag;}; log4js.configure({ appenders: { file: { type: 'file', filename: 'Log_'+getDateTime()+'_" + _f + ".log' } }, categories: { default: { appenders: ['file'], level: 'info' } }});const logger = log4js.getLogger('[" + _f + "]');" + _tc;
     fs.writeFileSync(opf, tc);
     return opf;
 };
