@@ -29,11 +29,14 @@ e.generate = (_tcFile) => {
     stubs.generate(_tcFile);
 };
 
-e.run = function(_tcFile) {
+e.run = function(_tcFile, _stopOnError) {
     let fileName = process.platform == "win32" ? "generatedTests\\" : "generatedTests/";
     tcFile = fileName + _tcFile;
+    let args = [];
+    if (_stopOnError) args = ["-b", tcFile];
+    else args = [tcFile];
     mocha.addFile(tcFile);
-    var op = spawnSync("mocha", ["-b", tcFile], { stdio: [0, 1, 2, 3] });
+    var op = spawnSync("mocha", args, { stdio: [0, 1, 2, 3] });
     if (op.stdout) console.log(op.stdout);
 };
 

@@ -20,6 +20,11 @@ if (option == "generate" || option == "g") {
 }
 
 if (option == "run" || option == "r") {
-    if (process.argv[3]) gen.run(process.argv[3]);
-    else cli.getTestScripts().forEach(_f => gen.run(_f));
+    if (process.argv[3] == "-stopOnError") {
+        if (process.argv[4]) gen.run(process.argv[4], true);
+        else cli.getTestScripts().forEach(_f => gen.run(_f, true));
+    } else {
+        if (process.argv[3]) gen.run(process.argv[3], false);
+        else cli.getTestScripts().forEach(_f => gen.run(_f, false));
+    }
 }

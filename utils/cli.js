@@ -12,7 +12,10 @@ e.usage = () => {
     message += "\t g, generate             Generates scripts for all the files under tests folder\n";
     message += "\t g, generate [file ...]  Generate the script for only the specifed test file\n";
     message += "\t r, run                  Run all the tests\n";
+    message += "\t r, run                  Run all the tests and stop at the first failure\n";
     message += "\t r, run [file ...]       Run the specific test\n";
+    message += "\t r, run [file ...]       Run the specific test\n";
+    message += "\t -stopOnError            Stop at the first failure while running tests\n";
     message += "\t v, version              Run the specific test\n";
     message += "\t demo                    Starts the demo server\n";
     message += "Some of the available options might overwrite your files without warning.\n";
