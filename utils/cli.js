@@ -9,6 +9,7 @@ e.usage = () => {
     message += "Options: \n";
     message += "\t i, init                 Initialize\n";
     message += "\t clean                   Clean up\n";
+    message += "\t ui                      Start in UI mode.\n";
     message += "\t g, generate             Generates scripts for all the files under tests folder\n";
     message += "\t g, generate [file ...]  Generate the script for only the specifed test file\n";
     message += "\t r, run                  Run all the tests\n";
@@ -103,5 +104,13 @@ e.readFile = (_f) => {
         return fs.readFileSync(fileName).toString().replace(/[ ]{2,}/g, " ").replace(/\n/g, "");
     }
 };
+
+e.isRATFolder = () => {
+    if (!fs.existsSync("generatedTests")) return false;
+    if (!fs.existsSync("lib")) return false;
+    if (!fs.existsSync("tests")) return false;
+    if (!fs.existsSync("node_modules")) return false;
+    return true
+}
 
 module.exports = e;

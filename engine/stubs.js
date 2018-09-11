@@ -158,6 +158,7 @@ function urlSubstitute(_url) {
 e.test = function(tc) {
     var name = tc.name;
     if(tc.continueOnError) name += " [Continue on error]";
+    if(tc.wait) name += " [Timeout of " + tc.wait + "s]";
     delimiters = tc.delimiters ? tc.delimiters : ["{{", "}}"];
     var response = tc.response;
     var request = tc.request;
@@ -186,7 +187,7 @@ e.test = function(tc) {
     if (request.method == "GET") _tc += "api" + endpoint + ".get(\"" + parseData(request.url) + "\")";
 
     if (request.method == "PUT") {
-        _tc += "api" + endpoint + ".put(\"" + urlSubstitute(request.url) + "\")";
+        _tc += "api" + endpoint + ".put(\"" + parseData(request.url) + "\")";
         if (request.payload) _tc += ".send(" + parseData(JSON.stringify(request.payload)) + ")";
         else if (request.payloadFile) _tc += ".send(" + parseData(cli.readFile("lib/" + request.payloadFile)) + ")";
         else _tc += ".send({})";

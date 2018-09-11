@@ -3,6 +3,7 @@
 "use strict";
 var gen = require("../engine/generator.js");
 var cli = require("../utils/cli");
+var ui = require("../utils/ui");
 
 let version = "1.0.3";
 
@@ -26,5 +27,13 @@ if (option == "run" || option == "r") {
     } else {
         if (process.argv[3]) gen.run(process.argv[3], false);
         else cli.getTestScripts().forEach(_f => gen.run(_f, false));
+    }
+}
+
+if (option == "ui") {
+    if (cli.isRATFolder()) {
+        ui.start();
+    } else {
+        console.log("The current folder is not RAT folder or has not be initialized.");
     }
 }

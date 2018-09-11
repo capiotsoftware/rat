@@ -1,17 +1,18 @@
 {
-  "name": "capiotratjs",
-  "version": "1.0.0",
-  "description": "ReST APi Tester",
-  "main": "./bin/app.js",
-  "scripts": {
-    "start": "node app.js"
-  },
-  "author": "Jerry M.",
-  "license": "ISC",
-  "dependencies": {
-    "mocha": "^5.2.0"
-  },
-  "bin": {
-    "rat": "./bin/app.js"
-  }
+    "name": "capiotratjs",
+    "version": "1.1.0",
+    "description": "ReST APi Tester",
+    "main": "./bin/app.js",
+    "scripts": {
+        "start": "node app.js"
+    },
+    "author": "Jerry M.",
+    "license": "ISC",
+    "dependencies": {
+        "inquirer": "^6.2.0",
+        "mocha": "^5.2.0"
+    },
+    "bin": {
+        "rat": "./bin/app.js"
+    }
 }
