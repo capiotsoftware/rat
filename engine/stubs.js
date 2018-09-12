@@ -51,22 +51,22 @@ function generateAssertionsForArray(_p, _d) {
                     break;
                 case 3:
                     if (_e.indexOf(delimiters[0]) > -1) {
-                        _tc += "expect(" + path + ").to.be.equal(" + render(_e) + ");";
+                        _tc += "expect(" + path + ", '"+ path +"').to.be.equal(" + render(_e) + ");";
                     } else {
-                        _tc += "expect(" + path + ").to.be.a('string');";
-                        _tc += "expect(" + path + ").to.be.equal('" + _e + "');";
+                        _tc += "expect(" + path + ", '"+ path +"').to.be.a('string');";
+                        _tc += "expect(" + path + ", '"+ path +"').to.be.equal('" + _e + "');";
                     }
                     break;
                 case 4:
-                    _tc += "expect(" + path + ").to.be.a('number');";
-                    _tc += "expect(" + path + ").to.be.equal(" + _e + ");";
+                    _tc += "expect(" + path + ", '"+ path +"').to.be.a('number');";
+                    _tc += "expect(" + path + ", '"+ path +"').to.be.equal(" + _e + ");";
                     break;
                 case 5:
-                    _tc += "expect(" + path + ").to.all.satisfy(bool => typeof bool === 'boolean');"
-                    _tc += "expect(" + path + ").to.be.equal(" + _e + ");";
+                    _tc += "expect(" + path + ", '"+ path +"').to.all.satisfy(bool => typeof bool === 'boolean');"
+                    _tc += "expect(" + path + ", '"+ path +"').to.be.equal(" + _e + ");";
                     break;
                 default:
-                    if (_p != "res.body") _tc += "expect(" + path + ").to.exist;";
+                    if (_p != "res.body") _tc += "expect(" + path + ", '"+ path +"').to.exist;";
                     break;
             }
         });
@@ -85,22 +85,22 @@ function generateAssertionsForJson(_p, _d) {
                 break;
             case 3:
                 if (_d[_k].indexOf(delimiters[0]) > -1) {
-                    _tc += "expect(" + path + ").to.be.equal(" + render(_d[_k]) + ");";
+                    _tc += "expect(" + path + ", '"+ path +"').to.be.equal(" + render(_d[_k]) + ");";
                 } else {
-                    _tc += "expect(" + path + ").to.be.a('string');";
-                    _tc += "expect(" + path + ").to.be.equal('" + _d[_k] + "');";
+                    _tc += "expect(" + path + ", '"+ path +"').to.be.a('string');";
+                    _tc += "expect(" + path + ", '"+ path +"').to.be.equal('" + _d[_k] + "');";
                 }
                 break;
             case 4:
-                _tc += "expect(" + path + ").to.be.a('number');";
-                _tc += "expect(" + path + ").to.be.equal(" + _d[_k] + ");";
+                _tc += "expect(" + path + ", '"+ path +"').to.be.a('number');";
+                _tc += "expect(" + path + ", '"+ path +"').to.be.equal(" + _d[_k] + ");";
                 break;
             case 5:
-                _tc += "expect(" + path + ").to.all.satisfy(bool => typeof bool === 'boolean');"
-                _tc += "expect(" + path + ").to.be.equal(" + _d[_k] + ");";
+                _tc += "expect(" + path + ", '"+ path +"').to.all.satisfy(bool => typeof bool === 'boolean');"
+                _tc += "expect(" + path + ", '"+ path +"').to.be.equal(" + _d[_k] + ");";
                 break;
             default:
-                _tc += "expect(" + path + ").to.exist;";
+                _tc += "expect(" + path + ", '"+ path +"').to.exist;";
                 break;
         }
     }
@@ -112,19 +112,19 @@ function generateAssertions(_d) {
     if (whatIsThis(_d) == 2) generateAssertionsForArray(path, _d);
     if (whatIsThis(_d) == 3) {
         if (_d.indexOf(delimiters[0]) > -1) {
-            _tc += "expect(" + path + ").to.be.equal(" + render(_d) + ");";
+            _tc += "expect(" + path + ", '"+ path +"').to.be.equal(" + render(_d) + ");";
         } else {
-            _tc += "expect(" + path + ").to.be.a('string');";
-            _tc += "expect(" + path + ").to.be.equal('" + _d + "');";
+            _tc += "expect(" + path + ", '"+ path +"').to.be.a('string');";
+            _tc += "expect(" + path + ", '"+ path +"').to.be.equal('" + _d + "');";
         }
     }
     if (whatIsThis(_d) == 4) {
-        _tc += "expect(" + path + ").to.be.a('number');";
-        _tc += "expect(" + path + ").to.be.equal(" + _d + ");";
+        _tc += "expect(" + path + ", '"+ path +"').to.be.a('number');";
+        _tc += "expect(" + path + ", '"+ path +"').to.be.equal(" + _d + ");";
     }
     if (whatIsThis(_d) == 5) {
-        _tc += "expect(" + path + ").to.all.satisfy(bool => typeof bool === 'boolean');"
-        _tc += "expect(" + path + ").to.be.equal(" + _d + ");";
+        _tc += "expect(" + path + ", '"+ path +"').to.all.satisfy(bool => typeof bool === 'boolean');"
+        _tc += "expect(" + path + ", '"+ path +"').to.be.equal(" + _d + ");";
     }
 }
 
