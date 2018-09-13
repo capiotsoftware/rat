@@ -27,7 +27,7 @@ function run() {
             type: 'list',
             name: 'tcName',
             message: 'Run> ',
-            pageSize: 20,
+            pageSize: 10,
             choices: fileList
         },
         { type: 'confirm', name: 'stopOnError', message: 'Stop on error?', default: true }
@@ -51,8 +51,8 @@ function generate() {
     inquirer.prompt([{
         type: 'list',
         name: 'tcName',
-        message: 'Run> ',
-        pageSize: 20,
+        message: 'Generate > ',
+        pageSize: 10,
         choices: fileList
     }]).then(_d => {
         let tcName = _d.tcName;

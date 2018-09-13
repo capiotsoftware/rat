@@ -14,6 +14,7 @@ e.generate = (_tcFile) => {
     tcFile = fileName + _tcFile;
 
     var testCase = JSON.parse(fs.readFileSync(tcFile).toString());
+    testCase["testName"] = testCase.testName ? testCase.testName : _tcFile.replace(".json", "");
     stubs.initTestSuite(testCase.testName, testCase.url);
 
     testCase.globals.forEach(function(x) {
