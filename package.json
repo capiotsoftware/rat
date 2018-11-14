@@ -1,18 +1,26 @@
 {
-    "name": "capiotratjs",
-    "version": "1.1.0",
+    "name": "@appveen/rat",
+    "version": "1.0.0",
     "description": "ReST APi Tester",
     "main": "./bin/app.js",
     "scripts": {
         "start": "node app.js"
     },
-    "author": "Jerry M.",
-    "license": "ISC",
+    "author": "Jerry M. <jerry@appveen.com>",
+    "license": "MIT",
     "dependencies": {
         "inquirer": "^6.2.0",
         "mocha": "^5.2.0"
     },
     "bin": {
         "rat": "./bin/app.js"
+    },
+    "homepage": "https://github.com/appveen/rat.git#readme",
+    "bugs": {
+        "url": "https://github.com/appveen/rat/issues"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/appveen/rat.git"
     }
 }

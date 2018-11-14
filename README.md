@@ -8,7 +8,7 @@ In itself, RAT is not a new framework. It's a simple code generator that generat
 `npm install -g log4js chai mocha supertest`
 
 ## Installation
-`npm i -g https://github.com/capiotsoftware/rat.git`
+`npm i -g @appveen/rat`
 
 ## Usage
 
