@@ -9,6 +9,7 @@
     "author": "Jerry M. <jerry@appveen.com>",
     "license": "MIT",
     "dependencies": {
+        "express": "^4.16.4",
         "inquirer": "^6.2.0",
         "mocha": "^5.2.0"
     },
