@@ -4,9 +4,6 @@ Writing test cases and automating them are fairly time consuming activities. RAT
 
 In itself, RAT is not a new framework. It's a simple code generator that generates [mocha](https://mochajs.org) test cases from a simple JSON file.
 
-## Pre-requisites
-`npm install -g log4js chai mocha supertest`
-
 ## Installation
 `npm i -g @appveen/rat`
 
