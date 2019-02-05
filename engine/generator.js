@@ -1,10 +1,7 @@
 var stubs = require("./stubs");
 var fs = require("fs");
-var buffer = require("buffer");
+var path = require("path");
 var spawnSync = require("child_process").spawnSync;
-var Mocha = require("mocha");
-var mocha = new Mocha();
-
 var tcFile;
 
 var e = {};
@@ -36,8 +33,10 @@ e.run = function(_tcFile, _stopOnError) {
     let args = [];
     if (_stopOnError) args = ["-b", tcFile];
     else args = [tcFile];
-    mocha.addFile(tcFile);
-    var op = spawnSync("mocha", args, { stdio: [0, 1, 2, 3] });
+    let executable = path.join(process.cwd(), "/node_modules/.bin/mocha")
+    var op = spawnSync(executable, args, {
+        stdio: [0, 1, 2, 3]
+    });
     if (op.stdout) console.log(op.stdout);
 };
 
