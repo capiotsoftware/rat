@@ -1,7 +1,7 @@
 {
     "name": "@appveen/rat",
     "version": "1.0.3",
-    "description": "ReST APi Tester",
+    "description": "ReST API Tester",
     "main": "./bin/app.js",
     "scripts": {
         "start": "node app.js"
