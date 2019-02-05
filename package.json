@@ -1,6 +1,6 @@
 {
     "name": "@appveen/rat",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "ReST APi Tester",
     "main": "./bin/app.js",
     "scripts": {
