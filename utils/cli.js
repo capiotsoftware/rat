@@ -1,5 +1,6 @@
 "use strict";
 var fs = require("fs");
+var path = require("path");
 var buffer = require("buffer");
 var execSync = require("child_process").execSync;
 var e = {};
@@ -29,9 +30,10 @@ e.init = () => {
     var sampleTestCase = fs.readFileSync(__dirname + "/../testCases/sample.json");
     var samplePayload = fs.readFileSync(__dirname + "/../testCases/payload.json");
     var sampleResonse = fs.readFileSync(__dirname + "/../testCases/response.json");
-    let testFileName = process.cwd() + (process.platform == "win32" ? "\\tests\\" : "/tests/") + "sample.json";
-    let requestFileName = process.cwd() + (process.platform == "win32" ? "\\lib\\" : "/lib/") + "sampleRequestPayload.json";
-    let responseFileName = process.cwd() + (process.platform == "win32" ? "\\lib\\" : "/lib/") + "sampleResponsePayload.json";
+    let testFileName = path.join(process.cwd(), "tests", "sample.json");
+    let requestFileName = path.join(process.cwd(), "lib", "sampleRequestPayload.json");
+    let responseFileName = path.join(process.cwd(), "lib", "sampleResponsePayload.json");
+    new buffer.Buffer(execSync("npm init -y"));
     new buffer.Buffer(execSync("npm i log4js chai mocha supertest request request-promise"));
     if (!fs.existsSync("lib")) {
         fs.mkdirSync("lib");
