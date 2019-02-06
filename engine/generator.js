@@ -28,12 +28,12 @@ e.generate = (_tcFile) => {
 };
 
 e.run = function(_tcFile, _stopOnError) {
-    let fileName = process.platform == "win32" ? "generatedTests\\" : "generatedTests/";
-    tcFile = fileName + _tcFile;
+    tcFile = path.join(process.cwd(), "generatedTests", _tcFile);
     let args = [];
     if (_stopOnError) args = ["-b", tcFile];
     else args = [tcFile];
     let executable = path.join(process.cwd(), "/node_modules/.bin/mocha")
+    console.log(`Running test - ${executable} ${args}`)
     var op = spawnSync(executable, args, {
         stdio: [0, 1, 2, 3]
     });

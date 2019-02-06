@@ -14,8 +14,7 @@ In itself, RAT is not a new framework. It's a simple code generator that generat
 The available options are,
 
 * `i, init`: Creates all the required folders and initializes it with a sample test case.
-* `clean`: Remove all RAT generated files and folders.
-* `clear`: Clears all the log files under the _logs_ folder.
+* `u, upgrade`: Upgrades the modules required to run RAT.
 * `g, generate`: Generates scripts for all the files under tests folder.
 * `g, generate [file ...]`: Generate the script for only the specifed test file.
 * `r, run`: Run all the tests.

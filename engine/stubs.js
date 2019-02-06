@@ -179,8 +179,8 @@ e.test = function(tc) {
 
     if (request.method == "POST") {
         _tc += "let _payload = {};"
-        if (request.payload) _tc += "_payload = " + parseData(JSON.stringify(request.payload));
-        else if (request.payloadFile) _tc += "_payload = " + parseData(cli.readFile("lib/" + request.payloadFile));
+        if (request.payload) _tc += "_payload = " + parseData(JSON.stringify(request.payload)) + ";";
+        else if (request.payloadFile) _tc += "_payload = " + parseData(cli.readFile("lib/" + request.payloadFile)) + ";";
         _tc += "api" + endpoint + ".post(\"" + parseData(request.url) + "\")";
         _tc += ".send(_payload)";
     }
@@ -189,8 +189,8 @@ e.test = function(tc) {
 
     if (request.method == "PUT") {
         _tc += "let _payload = {};"
-        if (request.payload) _tc += "_payload = " + parseData(JSON.stringify(request.payload));
-        else if (request.payloadFile) _tc += "_payload = " + parseData(cli.readFile("lib/" + request.payloadFile));
+        if (request.payload) _tc += "_payload = " + parseData(JSON.stringify(request.payload)) + ";";
+        else if (request.payloadFile) _tc += "_payload = " + parseData(cli.readFile("lib/" + request.payloadFile)) + ";";
         _tc += "api" + endpoint + ".put(\"" + parseData(request.url) + "\")";
         _tc += ".send(_payload)";
     }
