@@ -208,7 +208,8 @@ e.test = function(tc) {
 
     if (request.responseCode) _tc += ".expect(" + request.responseCode + ")";
 
-    _tc += ".end(function (err, res) {logger.info('Request');";
+    _tc += ".end(function (err, res) {expect(err).to.be.null;";
+    _tc += "logger.info('Request');";
     _tc += "logger.info('Request METHOD :: ' + '" + request.method + "');";
     _tc += "logger.info('Request URL :: ' + \"" + parseData(request.url) + "\");";
     if (request.headers) _tc += "logger.info('Request HEADER :: ' + '" + JSON.stringify(request.headers) + "');";
@@ -231,7 +232,6 @@ e.test = function(tc) {
         if (response.body) expectedResponse = response.body;
         else if (response.bodyFile) expectedResponse = JSON.parse(cli.readFile("lib/" + response.bodyFile));
 
-        _tc += "expect(err).to.be.null;";
         _tc += "expect(res.body).to.be.not.null;";
 
         generateAssertions(expectedResponse);
