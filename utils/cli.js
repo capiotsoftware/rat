@@ -34,7 +34,7 @@ e.init = () => {
     let requestFileName = path.join(process.cwd(), "lib", "sampleRequestPayload.json");
     let responseFileName = path.join(process.cwd(), "lib", "sampleResponsePayload.json");
     new buffer.Buffer(execSync("npm init -y"));
-    new buffer.Buffer(execSync("npm i log4js chai mocha supertest request request-promise"));
+    new buffer.Buffer(execSync("npm i log4js chai mocha supertest request request-promise faker"));
     if (!fs.existsSync("lib")) {
         fs.mkdirSync("lib");
         fs.writeFileSync(requestFileName, samplePayload.toString());

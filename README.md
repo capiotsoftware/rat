@@ -100,4 +100,10 @@ In the current version of `rat` only JSON responses are validated.
 }
 ```
 
-## Validations
+## Sample
+
+* Start the RAT demo server in a separate terminal - `rat demo`
+* Create a RAT test case folder - `rat init` . This would have generated a sample folder structure with a sample test case.
+* Generate the test case - `rat generate`
+* Run the test case - `rat run`
+

@@ -10,7 +10,9 @@ let data = [];
 var loginResponse = () => {
     let _token = new Date().getTime() + "" + new Date().getTime();
     tokens.push(_token);
-    return { token: _token };
+    return {
+        token: _token
+    };
 };
 
 var sampleError = {
@@ -26,12 +28,19 @@ app.all("*", (req, res, next) => {
     console.log((new Date()).toJSON(), req.method, req.url);
     next();
 });
-app.get("/", (req, res) => { res.status(403).json(sampleError); });
-app.post("/", (req, res) => { res.status(400).json(sampleError); });
+app.get("/", (req, res) => {
+    res.status(403).json(sampleError);
+});
+app.post("/", (req, res) => {
+    res.status(400).json(sampleError);
+});
 
 app.post("/login", (req, res) => {
+    console.log(req.body);
     if (req.body.username && req.body.username == "alice") res.json(loginResponse());
-    else res.status(400).json({ message: "Login error!" });
+    else res.status(400).json({
+        message: "Login error!"
+    });
 });
 
 app.get("/data/:id", (req, res) => {
@@ -76,7 +85,9 @@ app.delete("/data/:id", (req, res) => {
         if (index > -1) {
             ids.splice(index, 1);
             data.splice(index, 1);
-            res.json({ _id: req.params.id });
+            res.json({
+                _id: req.params.id
+            });
         } else res.status(404).end();
     }
 });

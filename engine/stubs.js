@@ -51,22 +51,22 @@ function generateAssertionsForArray(_p, _d) {
                     break;
                 case 3:
                     if (_e.indexOf(delimiters[0]) > -1) {
-                        _tc += "expect(" + path + ", '"+ path +"').to.be.equal(" + render(_e) + ");";
+                        _tc += "expect(" + path + ", '" + path + "').to.be.equal(" + render(_e) + ");";
                     } else {
-                        _tc += "expect(" + path + ", '"+ path +"').to.be.a('string');";
-                        _tc += "expect(" + path + ", '"+ path +"').to.be.equal('" + _e + "');";
+                        _tc += "expect(" + path + ", '" + path + "').to.be.a('string');";
+                        _tc += "expect(" + path + ", '" + path + "').to.be.equal('" + _e + "');";
                     }
                     break;
                 case 4:
-                    _tc += "expect(" + path + ", '"+ path +"').to.be.a('number');";
-                    _tc += "expect(" + path + ", '"+ path +"').to.be.equal(" + _e + ");";
+                    _tc += "expect(" + path + ", '" + path + "').to.be.a('number');";
+                    _tc += "expect(" + path + ", '" + path + "').to.be.equal(" + _e + ");";
                     break;
                 case 5:
-                    _tc += "expect(" + path + ", '"+ path +"').to.all.satisfy(bool => typeof bool === 'boolean');"
-                    _tc += "expect(" + path + ", '"+ path +"').to.be.equal(" + _e + ");";
+                    _tc += "expect(" + path + ", '" + path + "').to.all.satisfy(bool => typeof bool === 'boolean');"
+                    _tc += "expect(" + path + ", '" + path + "').to.be.equal(" + _e + ");";
                     break;
                 default:
-                    if (_p != "res.body") _tc += "expect(" + path + ", '"+ path +"').to.exist;";
+                    if (_p != "res.body") _tc += "expect(" + path + ", '" + path + "').to.exist;";
                     break;
             }
         });
@@ -85,22 +85,22 @@ function generateAssertionsForJson(_p, _d) {
                 break;
             case 3:
                 if (_d[_k].indexOf(delimiters[0]) > -1) {
-                    _tc += "expect(" + path + ", '"+ path +"').to.be.equal(" + render(_d[_k]) + ");";
+                    _tc += "expect(" + path + ", '" + path + "').to.be.equal(" + render(_d[_k]) + ");";
                 } else {
-                    _tc += "expect(" + path + ", '"+ path +"').to.be.a('string');";
-                    _tc += "expect(" + path + ", '"+ path +"').to.be.equal('" + _d[_k] + "');";
+                    _tc += "expect(" + path + ", '" + path + "').to.be.a('string');";
+                    _tc += "expect(" + path + ", '" + path + "').to.be.equal('" + _d[_k] + "');";
                 }
                 break;
             case 4:
-                _tc += "expect(" + path + ", '"+ path +"').to.be.a('number');";
-                _tc += "expect(" + path + ", '"+ path +"').to.be.equal(" + _d[_k] + ");";
+                _tc += "expect(" + path + ", '" + path + "').to.be.a('number');";
+                _tc += "expect(" + path + ", '" + path + "').to.be.equal(" + _d[_k] + ");";
                 break;
             case 5:
-                _tc += "expect(" + path + ", '"+ path +"').to.all.satisfy(bool => typeof bool === 'boolean');"
-                _tc += "expect(" + path + ", '"+ path +"').to.be.equal(" + _d[_k] + ");";
+                _tc += "expect(" + path + ", '" + path + "').to.all.satisfy(bool => typeof bool === 'boolean');"
+                _tc += "expect(" + path + ", '" + path + "').to.be.equal(" + _d[_k] + ");";
                 break;
             default:
-                _tc += "expect(" + path + ", '"+ path +"').to.exist;";
+                _tc += "expect(" + path + ", '" + path + "').to.exist;";
                 break;
         }
     }
@@ -112,19 +112,19 @@ function generateAssertions(_d) {
     if (whatIsThis(_d) == 2) generateAssertionsForArray(path, _d);
     if (whatIsThis(_d) == 3) {
         if (_d.indexOf(delimiters[0]) > -1) {
-            _tc += "expect(" + path + ", '"+ path +"').to.be.equal(" + render(_d) + ");";
+            _tc += "expect(" + path + ", '" + path + "').to.be.equal(" + render(_d) + ");";
         } else {
-            _tc += "expect(" + path + ", '"+ path +"').to.be.a('string');";
-            _tc += "expect(" + path + ", '"+ path +"').to.be.equal('" + _d + "');";
+            _tc += "expect(" + path + ", '" + path + "').to.be.a('string');";
+            _tc += "expect(" + path + ", '" + path + "').to.be.equal('" + _d + "');";
         }
     }
     if (whatIsThis(_d) == 4) {
-        _tc += "expect(" + path + ", '"+ path +"').to.be.a('number');";
-        _tc += "expect(" + path + ", '"+ path +"').to.be.equal(" + _d + ");";
+        _tc += "expect(" + path + ", '" + path + "').to.be.a('number');";
+        _tc += "expect(" + path + ", '" + path + "').to.be.equal(" + _d + ");";
     }
     if (whatIsThis(_d) == 5) {
-        _tc += "expect(" + path + ", '"+ path +"').to.all.satisfy(bool => typeof bool === 'boolean');"
-        _tc += "expect(" + path + ", '"+ path +"').to.be.equal(" + _d + ");";
+        _tc += "expect(" + path + ", '" + path + "').to.all.satisfy(bool => typeof bool === 'boolean');"
+        _tc += "expect(" + path + ", '" + path + "').to.be.equal(" + _d + ");";
     }
 }
 
@@ -157,8 +157,8 @@ function urlSubstitute(_url) {
 
 e.test = function(tc) {
     var name = tc.name;
-    if(tc.continueOnError) name += " [Continue on error]";
-    if(tc.wait) name += " [Timeout of " + tc.wait + "s]";
+    if (tc.continueOnError) name += " [Continue on error]";
+    if (tc.wait) name += " [Timeout of " + tc.wait + "s]";
     delimiters = tc.delimiters ? tc.delimiters : ["{{", "}}"];
     var response = tc.response;
     var request = tc.request;
@@ -172,25 +172,27 @@ e.test = function(tc) {
         _tc += "logger.info('Changing default timeout for this testcase to " + (tc.wait) + " seconds');";
     } else if (tc.waitFor) {
         let timeout = 10;
-        if(tc.waitFor.timeout) timeout = tc.waitFor.timeout;
+        if (tc.waitFor.timeout) timeout = tc.waitFor.timeout;
         _tc += "this.timeout(" + (timeout * 1000) + ");";
         _tc += "logger.info('Changing default timeout for this testcase to " + (timeout) + " seconds');";
     }
 
     if (request.method == "POST") {
+        _tc += "let _payload = {};"
+        if (request.payload) _tc += "_payload = " + parseData(JSON.stringify(request.payload));
+        else if (request.payloadFile) _tc += "_payload = " + parseData(cli.readFile("lib/" + request.payloadFile));
         _tc += "api" + endpoint + ".post(\"" + parseData(request.url) + "\")";
-        if (request.payload) _tc += ".send(" + parseData(JSON.stringify(request.payload)) + ")";
-        else if (request.payloadFile) _tc += ".send(" + parseData(cli.readFile("lib/" + request.payloadFile)) + ")";
-        else _tc += ".send({})";
+        _tc += ".send(_payload)";
     }
 
     if (request.method == "GET") _tc += "api" + endpoint + ".get(\"" + parseData(request.url) + "\")";
 
     if (request.method == "PUT") {
+        _tc += "let _payload = {};"
+        if (request.payload) _tc += "_payload = " + parseData(JSON.stringify(request.payload));
+        else if (request.payloadFile) _tc += "_payload = " + parseData(cli.readFile("lib/" + request.payloadFile));
         _tc += "api" + endpoint + ".put(\"" + parseData(request.url) + "\")";
-        if (request.payload) _tc += ".send(" + parseData(JSON.stringify(request.payload)) + ")";
-        else if (request.payloadFile) _tc += ".send(" + parseData(cli.readFile("lib/" + request.payloadFile)) + ")";
-        else _tc += ".send({})";
+        _tc += ".send(_payload)";
     }
 
     if (request.method == "DELETE") _tc += "api" + endpoint + ".delete(\"" + parseData(request.url) + "\")";
@@ -210,10 +212,7 @@ e.test = function(tc) {
     _tc += "logger.info('Request METHOD :: ' + '" + request.method + "');";
     _tc += "logger.info('Request URL :: ' + \"" + parseData(request.url) + "\");";
     if (request.headers) _tc += "logger.info('Request HEADER :: ' + '" + JSON.stringify(request.headers) + "');";
-    if (request.method == "PUT" || request.method == "POST")
-        if (request.payload) _tc += "logger.info('Request DATA :: ' + '" + (parseData(JSON.stringify(request.payload))) + "');";
-        else if (request.payloadFile) _tc += "logger.info('Request DATA from file :: ' + '" + request.payloadFile + "');";
-    else _tc += "logger.info('Request DATA :: {} ');";
+    if (request.method == "PUT" || request.method == "POST") _tc += "logger.info('Request DATA :: ' +  JSON.stringify(_payload) );";
     _tc += "logger.info('Response STATUS :: ' + res.statusCode);";
     _tc += "logger.info('Response HEADER :: ' + JSON.stringify(res.headers));";
     _tc += "logger.info('Response BODY :: ' + JSON.stringify(res.body));";
@@ -234,22 +233,22 @@ e.test = function(tc) {
 
         _tc += "expect(err).to.be.null;";
         _tc += "expect(res.body).to.be.not.null;";
-        
+
         generateAssertions(expectedResponse);
-        
-        if(response.list) _tc += "let check = checkInList(res.body, " + JSON.stringify(response.list) + ");expect(check, \"Check data in list failed!\").to.be.equal(true);"
+
+        if (response.list) _tc += "let check = checkInList(res.body, " + JSON.stringify(response.list) + ");expect(check, \"Check data in list failed!\").to.be.equal(true);"
     }
     // wait or waitFor
     if (tc.wait) _tc += "setTimeout(() => {logger.info('" + name + " :: PASS'); done();}, " + (tc.wait * 1000) + ");";
     else if (tc.waitFor) {
         let timeout = 10;
-        if(tc.waitFor.timeout) timeout = tc.waitFor.timeout;
+        if (tc.waitFor.timeout) timeout = tc.waitFor.timeout;
         _tc += "var d = new Date();d.setSeconds(d.getSeconds() + " + timeout + ");"
         _tc += "waitForInAPI({";
         _tc += "'method': 'GET',"
         let otherOptions = [];
         otherOptions.push("'uri': url" + tc.waitFor.request.endpoint + "+" + urlSubstitute(tc.waitFor.request.uri));
-        if(tc.waitFor.request.qs) otherOptions.push("'qs': "+ JSON.stringify(tc.waitFor.request.qs));
+        if (tc.waitFor.request.qs) otherOptions.push("'qs': " + JSON.stringify(tc.waitFor.request.qs));
         if (tc.waitFor.request.headers) {
             let header = "'headers':{"
             let headers = [];
@@ -264,8 +263,8 @@ e.test = function(tc) {
             otherOptions.push(header);
         }
         _tc += otherOptions.join(",");
-        _tc += "},'" + tc.waitFor.key+ "',";
-        _tc += "'" + tc.waitFor.value+ "',d";
+        _tc += "},'" + tc.waitFor.key + "',";
+        _tc += "'" + tc.waitFor.value + "',d";
         _tc += ").then(() => {logger.info('" + name + " :: PASS'); done();}, ()=> assert.equal(1,0,'waitForInAPI :: FAIL!'));"
     } else _tc += "logger.info('" + name + " :: PASS'); done();";
 
@@ -282,7 +281,7 @@ e.generate = function(_f, _stopOnError) {
     let suffix = _f.split(".")[0] + ".js";
     var opf = "generatedTests/" + suffix;
     if (os.platform() == "win32") opf = "generatedTests\\" + suffix;
-    let tc = "const log4js = require('log4js'); const request = require('request-promise'); function getDateTime() {var sd = new Date();var syear = sd.getFullYear();var smonth = ('0' + (sd.getMonth() + 1)).slice(-2);var sdate = ('0' + sd.getDate()).slice(-2);var shours = ('0' + sd.getHours()).slice(-2);var sminutes = ('0' + sd.getMinutes()).slice(-2);var sseconds = ('0' + sd.getSeconds()).slice(-2);var startDate = syear + '-' + smonth + '-' + sdate;var startTime = shours + '-' + sminutes + '-' + sseconds;return startDate + '_' + startTime;}; function waitForInAPI(_option, _key, _value, _till){if(_till > (new Date())){return request(_option).then(_d => {if (JSON.parse(_d)[_key] == _value) return true;else {return new Promise(_resolve => {setTimeout(()=> _resolve(waitForInAPI(_option, _key, _value, _till)),500);});}}, _e => {return false});} else return false;}; function checkInList(_list, _values) {let flag = false;_list.forEach(_e => {let innerFlag = true;for (_k in _values) {innerFlag = innerFlag && (_e[_k] == _values[_k]);};if (innerFlag) flag = true;});return flag;}; log4js.configure({ appenders: { file: { type: 'file', filename: 'Log_'+getDateTime()+'_" + _f + ".log' } }, categories: { default: { appenders: ['file'], level: 'info' } }});const logger = log4js.getLogger('[" + _f + "]');" + _tc;
+    let tc = "const log4js = require('log4js'); const request = require('request-promise'); const faker = require('faker'); function getDateTime() {var sd = new Date();var syear = sd.getFullYear();var smonth = ('0' + (sd.getMonth() + 1)).slice(-2);var sdate = ('0' + sd.getDate()).slice(-2);var shours = ('0' + sd.getHours()).slice(-2);var sminutes = ('0' + sd.getMinutes()).slice(-2);var sseconds = ('0' + sd.getSeconds()).slice(-2);var startDate = syear + '-' + smonth + '-' + sdate;var startTime = shours + '-' + sminutes + '-' + sseconds;return startDate + '_' + startTime;}; function waitForInAPI(_option, _key, _value, _till){if(_till > (new Date())){return request(_option).then(_d => {if (JSON.parse(_d)[_key] == _value) return true;else {return new Promise(_resolve => {setTimeout(()=> _resolve(waitForInAPI(_option, _key, _value, _till)),500);});}}, _e => {return false});} else return false;}; function checkInList(_list, _values) {let flag = false;_list.forEach(_e => {let innerFlag = true;for (_k in _values) {innerFlag = innerFlag && (_e[_k] == _values[_k]);};if (innerFlag) flag = true;});return flag;}; log4js.configure({ appenders: { file: { type: 'file', filename: 'Log_'+getDateTime()+'_" + _f + ".log' } }, categories: { default: { appenders: ['file'], level: 'info' } }});const logger = log4js.getLogger('[" + _f + "]');" + _tc;
     fs.writeFileSync(opf, tc);
     return opf;
 };
