@@ -33,9 +33,10 @@ e.run = function(_tcFile, _stopOnError) {
     if (_stopOnError) args = ["-b", tcFile];
     else args = [tcFile];
     let executable = path.join(process.cwd(), "/node_modules/.bin/mocha")
+    if (process.platform == "win32") executable += ".cmd"
     console.log(`Running test - ${executable} ${args}`)
     var op = spawnSync(executable, args, {
-        stdio: [0, 1, 2, 3]
+        stdio: [0, 1, 2]
     });
     if (op.stdout) console.log(op.stdout);
 };
