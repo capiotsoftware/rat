@@ -14,17 +14,17 @@ e.version = () => {
 e.usage = () => {
     var message = "Usage: rat [options] [file ...]\n";
     message += "Options: \n";
-    message += "\t i, init                 Initialize\n";
-    message += "\t u, upgrade              Upgrade\n";
-    message += "\t clean                   Clean up\n";
-    message += "\t ui                      Start in UI mode.\n";
-    message += "\t g, generate             Generates scripts for all the files under tests folder\n";
-    message += "\t g, generate [file ...]  Generate the script for only the specifed test file\n";
-    message += "\t r, run                  Run all the tests\n";
-    message += "\t r, run [file ...]       Run the specific test\n";
-    message += "\t -stopOnError            Stop at the first failure while running tests\n";
-    message += "\t v, version              Run the specific test\n";
-    message += "\t demo                    Starts the demo server\n";
+    message += "\t -i, --init                 Initialize\n";
+    message += "\t -u, --upgrade              Upgrade\n";
+    message += "\t --clean                   Clean up\n";
+    message += "\t --ui                      Start in UI mode.\n";
+    message += "\t -g, --generate             Generates scripts for all the files under tests folder\n";
+    message += "\t -g, --generate [file ...]  Generate the script for only the specifed test file\n";
+    message += "\t -r, --run                  Run all the tests\n";
+    message += "\t -r, --run [file ...]       Run the specific test\n";
+    message += "\t --stopOnError            Stop at the first failure while running tests\n";
+    message += "\t -v, --version              Run the specific test\n";
+    message += "\t --demo                    Starts the demo server\n";
     message += "Some of the available options might overwrite your files without warning.\n";
     console.log(message);
     process.exit();

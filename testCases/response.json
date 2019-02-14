@@ -5,7 +5,7 @@
         "line1": "#404 Pritam Woods",
         "line2": "Bellandur",
         "city": "Bangalore",
-        "state": "Karnataka",
+        "state": "{{dataPipe['sample.json'].data.address.state}}",
         "country": "India",
         "pin": "560103"
     },

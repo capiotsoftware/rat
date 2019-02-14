@@ -19,7 +19,7 @@ e.generate = (_tcFile) => {
     });
 
     testCase.tests.forEach(_test => {
-        stubs.test(_test);
+        stubs.test(_tcFile, _test);
     });
 
     stubs.endTestSuite();
@@ -34,7 +34,7 @@ e.run = function(_tcFile, _stopOnError) {
     else args = [tcFile];
     let executable = path.join(process.cwd(), "/node_modules/.bin/mocha")
     if (process.platform == "win32") executable += ".cmd"
-    console.log(`Running test - ${executable} ${args}`)
+    console.log(`Running test - ${executable} ${args.join(" ")}`)
     var op = spawnSync(executable, args, {
         stdio: [0, 1, 2]
     });

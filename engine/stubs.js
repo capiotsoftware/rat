@@ -1,5 +1,6 @@
 const os = require("os");
 const fs = require("fs");
+const path = require("path");
 const cli = require("../utils/cli");
 
 var e = {};
@@ -155,7 +156,7 @@ function urlSubstitute(_url) {
     return "\"" + url[0] + "\" + " + url[1];
 }
 
-e.test = function(tc) {
+e.test = function(tcFile, tc) {
     var name = tc.name;
     if (tc.continueOnError) name += " [Continue on error]";
     if (tc.wait) name += " [Timeout of " + tc.wait + "s]";
@@ -219,8 +220,10 @@ e.test = function(tc) {
     _tc += "logger.info('Response BODY :: ' + JSON.stringify(res.body));";
     _tc += "try{"
     _tc += "expect(res.status).to.equal(" + request.responseCode + ");";
-    if (request.saveResponse)
+    if (request.saveResponse) {
         _tc += request.saveResponse + " = res.body;";
+        _tc += `dataPipe["${tcFile}"]["${request.saveResponse}"] = res.body; fs.writeFileSync(dataFile, JSON.stringify(dataPipe));`
+    }
     if (expectedResponseHeaders) {
         for (var _header in expectedResponseHeaders)
             if (expectedResponseHeaders[_header]) _tc += "expect(res.headers." + _header.toLowerCase() + ").to.equal(" + render(expectedResponseHeaders[_header]) + ");";
@@ -279,9 +282,13 @@ e.test = function(tc) {
 
 e.generate = function(_f, _stopOnError) {
     let suffix = _f.split(".")[0] + ".js";
+    let opt = path.join(process.cwd(), "generatedTests", suffix);
     var opf = "generatedTests/" + suffix;
-    if (os.platform() == "win32") opf = "generatedTests\\" + suffix;
-    let tc = "const log4js = require('log4js'); const request = require('request-promise'); const faker = require('faker'); function getDateTime() {var sd = new Date();var syear = sd.getFullYear();var smonth = ('0' + (sd.getMonth() + 1)).slice(-2);var sdate = ('0' + sd.getDate()).slice(-2);var shours = ('0' + sd.getHours()).slice(-2);var sminutes = ('0' + sd.getMinutes()).slice(-2);var sseconds = ('0' + sd.getSeconds()).slice(-2);var startDate = syear + '-' + smonth + '-' + sdate;var startTime = shours + '-' + sminutes + '-' + sseconds;return startDate + '_' + startTime;}; function waitForInAPI(_option, _key, _value, _till){if(_till > (new Date())){return request(_option).then(_d => {if (JSON.parse(_d)[_key] == _value) return true;else {return new Promise(_resolve => {setTimeout(()=> _resolve(waitForInAPI(_option, _key, _value, _till)),500);});}}, _e => {return false});} else return false;}; function checkInList(_list, _values) {let flag = false;_list.forEach(_e => {let innerFlag = true;for (_k in _values) {innerFlag = innerFlag && (_e[_k] == _values[_k]);};if (innerFlag) flag = true;});return flag;}; log4js.configure({ appenders: { file: { type: 'file', filename: 'Log_'+getDateTime()+'_" + _f + ".log' } }, categories: { default: { appenders: ['file'], level: 'info' } }});const logger = log4js.getLogger('[" + _f + "]');" + _tc;
+    let tc = "const log4js = require('log4js'); const request = require('request-promise'); const faker = require('faker');";
+    tc += " const fs = require('fs'); const path = require('path');"
+    tc += "const dataFileName = 'data.json'; let dataPipe = {}; let dataFile = path.join(process.cwd(), dataFileName);if(!fs.existsSync(dataFile)); fs.writeFileSync(dataFile, '{}'); dataPipe = JSON.parse(fs.readFileSync(dataFile).toString());"
+    tc += "function getDateTime() {var sd = new Date();var syear = sd.getFullYear();var smonth = ('0' + (sd.getMonth() + 1)).slice(-2);var sdate = ('0' + sd.getDate()).slice(-2);var shours = ('0' + sd.getHours()).slice(-2);var sminutes = ('0' + sd.getMinutes()).slice(-2);var sseconds = ('0' + sd.getSeconds()).slice(-2);var startDate = syear + '-' + smonth + '-' + sdate;var startTime = shours + '-' + sminutes + '-' + sseconds;return startDate + '_' + startTime;}; function waitForInAPI(_option, _key, _value, _till){if(_till > (new Date())){return request(_option).then(_d => {if (JSON.parse(_d)[_key] == _value) return true;else {return new Promise(_resolve => {setTimeout(()=> _resolve(waitForInAPI(_option, _key, _value, _till)),500);});}}, _e => {return false});} else return false;}; function checkInList(_list, _values) {let flag = false;_list.forEach(_e => {let innerFlag = true;for (_k in _values) {innerFlag = innerFlag && (_e[_k] == _values[_k]);};if (innerFlag) flag = true;});return flag;}; log4js.configure({ appenders: { file: { type: 'file', filename: 'Log_'+getDateTime()+'_" + _f + ".log' } }, categories: { default: { appenders: ['file'], level: 'info' } }});const logger = log4js.getLogger('[" + _f + "]');";
+    tc += `if(!dataPipe['${_f}']) dataPipe['${_f}'] = {};` + _tc
     fs.writeFileSync(opf, tc);
     return opf;
 };

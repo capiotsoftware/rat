@@ -2,7 +2,7 @@
     "name": "@appveen/rat",
     "version": "1.2.2",
     "description": "ReST API Tester",
-    "main": "./bin/app.js",
+    "main": "./bin/rat.js",
     "scripts": {
         "start": "node app.js"
     },
@@ -10,6 +10,7 @@
     "license": "MIT",
     "dependencies": {
         "body-parser": "^1.18.3",
+        "commander": "^2.19.0",
         "express": "^4.16.4",
         "inquirer": "^6.2.0",
         "rimraf": "^2.6.3"
