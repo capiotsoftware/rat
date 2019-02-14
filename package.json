@@ -16,7 +16,7 @@
         "rimraf": "^2.6.3"
     },
     "bin": {
-        "rat": "./bin/app.js"
+        "rat": "./bin/rat.js"
     },
     "homepage": "https://github.com/appveen/rat.git#readme",
     "bugs": {
