@@ -207,9 +207,9 @@ e.test = function(tcFile, tc) {
         }
     }
 
-    if (request.responseCode) _tc += ".expect(" + request.responseCode + ")";
+    // if (request.responseCode) _tc += ".expect(" + request.responseCode + ")";
 
-    _tc += ".end(function (err, res) {expect(err).to.be.null;";
+    _tc += ".end(function (err, res) {";
     _tc += "logger.info('Request');";
     _tc += "logger.info('Request METHOD :: ' + '" + request.method + "');";
     _tc += "logger.info('Request URL :: ' + \"" + parseData(request.url) + "\");";
@@ -218,8 +218,9 @@ e.test = function(tcFile, tc) {
     _tc += "logger.info('Response STATUS :: ' + res.statusCode);";
     _tc += "logger.info('Response HEADER :: ' + JSON.stringify(res.headers));";
     _tc += "logger.info('Response BODY :: ' + JSON.stringify(res.body));";
+    _tc += "expect(err).to.be.null;";
     _tc += "try{"
-    _tc += "expect(res.status).to.equal(" + request.responseCode + ");";
+    _tc += "expect(res.status, JSON.stringify(res.body)).to.equal(" + request.responseCode + ");";
     if (request.saveResponse) {
         _tc += request.saveResponse + " = res.body;";
         _tc += `dataPipe["${tcFile}"]["${request.saveResponse}"] = res.body; fs.writeFileSync(dataFile, JSON.stringify(dataPipe));`
