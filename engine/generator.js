@@ -14,9 +14,17 @@ e.generate = (_tcFile) => {
     testCase["testName"] = testCase.testName ? testCase.testName : _tcFile.replace(".json", "");
     stubs.initTestSuite(testCase.testName, testCase.url);
 
-    testCase.globals.forEach(function(x) {
-        stubs.addGlobalVariable(x);
-    });
+    if(testCase.globals) {
+	    testCase.globals.forEach(function(x) {
+	        stubs.addGlobalVariable(x);
+	    });
+	  }
+
+	  if(testCase.modules) {
+	    testCase.modules.forEach(function(x) {
+	        stubs.addModules(x);
+	    });
+	  }
 
     testCase.tests.forEach(_test => {
         stubs.test(_tcFile, _test);

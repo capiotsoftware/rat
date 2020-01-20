@@ -35,21 +35,27 @@ e.init = () => {
     var sampleTestCase = fs.readFileSync(__dirname + "/../testCases/sample.json");
     var samplePayload = fs.readFileSync(__dirname + "/../testCases/payload.json");
     var sampleResonse = fs.readFileSync(__dirname + "/../testCases/response.json");
+    var sampleModule = fs.readFileSync(__dirname + "/../testCases/sampleFunction.js");
     let testFileName = path.join(process.cwd(), "tests", "sample.json");
     let requestFileName = path.join(process.cwd(), "lib", "sampleRequestPayload.json");
     let responseFileName = path.join(process.cwd(), "lib", "sampleResponsePayload.json");
-    new buffer.Buffer(execSync("npm init -y"));
-    new buffer.Buffer(execSync("npm i log4js chai mocha supertest request request-promise faker"));
+    let moduleFileName = path.join(process.cwd(), "modules", "sampleFunction.js");
     if (!fs.existsSync("lib")) {
         fs.mkdirSync("lib");
         fs.writeFileSync(requestFileName, samplePayload.toString());
         fs.writeFileSync(responseFileName, sampleResonse.toString());
+    }
+    if (!fs.existsSync("modules")) {
+        fs.mkdirSync("modules");
+        fs.writeFileSync(moduleFileName, sampleModule.toString());
     }
     if (!fs.existsSync("generatedTests")) fs.mkdirSync("generatedTests");
     if (!fs.existsSync("tests")) {
         fs.mkdirSync("tests");
         fs.writeFileSync(testFileName, sampleTestCase.toString());
     }
+    new buffer.Buffer(execSync("npm init -y"));
+    new buffer.Buffer(execSync("npm i log4js chai mocha supertest request request-promise faker"));
     console.log("Done!");
     process.exit();
 };

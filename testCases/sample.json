@@ -3,6 +3,9 @@
     "url": [
         "http://localhost:8080"
     ],
+    "modules": [
+    	"sampleFunction"
+    ],
     "globals": [
         "loginResponse",
         "data"
@@ -119,12 +122,12 @@
                 "body": {
                     "name": "Alice Cooper",
                     "address": {
-                        "line1": "#404 Pritam Woods",
+                        "line1": "#<% sampleFunction.randomPin(10) %> Pritam Woods",
                         "line2": "Bellandur",
                         "city": "Bangalore",
                         "state": "Karnataka",
                         "country": "India",
-                        "pin": "560103"
+                        "pin": "<% sampleFunction.randomPin(11) %>"
                     },
                     "mobile": "+91 987 654 4323",
                     "nameOfChildren": [

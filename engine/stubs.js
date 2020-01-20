@@ -25,6 +25,24 @@ e.addGlobalVariable = function(_a) {
     _tc += "var " + _a + "='';";
 };
 
+let functions = [];
+function funcReplacer(match, id) {
+  return functions[id];
+};
+
+function jsonReplacer(key, val) {
+    if (typeof val === 'function') {
+  	    functions.push(val.toString());
+        return "{func_" + (functions.length - 1) + "}";
+    }
+    return val;
+};
+
+e.addModules = function(_a) {
+	functions = [];
+    _tc += `var ${_a} = ${JSON.stringify(require(path.join(process.cwd(), "modules", _a)), jsonReplacer).replace(/"\{func_(\d+)\}"/g, funcReplacer)};`
+};
+
 e.addEdpoints = function(_a) {
     _tc += "var urls = " + _a + ";";
 };
@@ -76,7 +94,7 @@ function generateAssertionsForArray(_p, _d) {
 
 function generateAssertionsForJson(_p, _d) {
     for (_k in _d) {
-        let path = _p + "." + _k;
+        let path = `${_p}["${_k}"]`;
         switch (whatIsThis(_d[_k])) {
             case 1:
                 generateAssertionsForJson(path, _d[_k]);
@@ -227,7 +245,7 @@ e.test = function(tcFile, tc) {
     }
     if (expectedResponseHeaders) {
         for (var _header in expectedResponseHeaders)
-            if (expectedResponseHeaders[_header]) _tc += "expect(res.headers." + _header.toLowerCase() + ").to.equal(" + render(expectedResponseHeaders[_header]) + ");";
+            if (expectedResponseHeaders[_header]) _tc += "expect(res.headers['" + _header.toLowerCase() + "']).to.equal(" + render(expectedResponseHeaders[_header]) + ");";
             else _tc += "expect(res.headers." + _header.toLowerCase() + ").to.be.not.empty;";
     }
     if (response && (response.body || response.bodyFile)) {
